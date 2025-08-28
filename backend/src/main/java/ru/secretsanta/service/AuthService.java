@@ -6,8 +6,5 @@ import ru.secretsanta.dto.response.AuthResponse;
 
 public interface AuthService {
     AuthResponse register(RegisterRequest request);
-
     AuthResponse login(LoginRequest request);
-    boolean isAdminByToken(String token);
-    String getNameByToken(String token);
 }

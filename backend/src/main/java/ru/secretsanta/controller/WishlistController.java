@@ -2,10 +2,10 @@ package ru.secretsanta.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.entity.WishlistItem;
 import ru.secretsanta.service.WishlistService;
-import ru.secretsanta.util.JWTUtil;
 
 import java.util.List;
 
@@ -14,12 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WishlistController {
     private final WishlistService wishlistService;
-    private final JWTUtil jwtUtil;
 
     @PostMapping
-    public ResponseEntity<String> addItem(@RequestHeader("Authorization") String header,
+    public ResponseEntity<String> addItem(Authentication authentication,
                                           @RequestBody WishlistItem item) {
-        String username = jwtUtil.extractUsername(header.substring(7));
+        String username = authentication.getName();
         wishlistService.addItem(username, item);
         return ResponseEntity.ok("Item added");
     }
@@ -38,8 +37,8 @@ public class WishlistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistItem>> getWishlist(@RequestHeader("Authorization") String header) {
-        String username = jwtUtil.extractUsername(header.substring(7));
+    public ResponseEntity<List<WishlistItem>> getWishlist(Authentication authentication) {
+        String username = authentication.getName();
         return ResponseEntity.ok(wishlistService.getWishlist(username));
     }
 }
