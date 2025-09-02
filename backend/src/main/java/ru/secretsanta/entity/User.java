@@ -37,8 +37,10 @@ public class User {
     private List<Event> events = new ArrayList<>();
 
     @OneToMany(mappedBy = "santa", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<SantaAssignment> sentAssignments = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SantaAssignment> receivedAssignments = new ArrayList<>();
 }
