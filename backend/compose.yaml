@@ -1,0 +1,33 @@
+
+services:
+  secret_santa:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://secret_santa_db:5432/secret_santa
+      SPRING_DATASOURCE_USERNAME: secretsanta
+      SPRING_DATASOURCE_PASSWORD: lopata
+    depends_on:
+      - secret_santa_db
+  secret_santa_db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: secretsanta
+      POSTGRES_PASSWORD: lopata
+      POSTGRES_DB: secret_santa
+    volumes:
+      - secret_santa_db-data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "secretsanta" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  secret_santa_db-data:
