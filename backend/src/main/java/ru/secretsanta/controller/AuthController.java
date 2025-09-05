@@ -17,7 +17,10 @@ import ru.secretsanta.exception.InvalidCredentialsException;
 import ru.secretsanta.exception.UserNotFoundException;
 import ru.secretsanta.repository.UserRepository;
 import ru.secretsanta.service.AuthService;
+import ru.secretsanta.service.InviteService;
 import ru.secretsanta.util.JWTUtil;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -26,25 +29,33 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private final JWTUtil jwtUtil;
-
-    private final UserRepository userRepository;
+    private final InviteService inviteService;
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
         AuthResponse authResponse = authService.login(request);
 
         return ResponseEntity.ok(authResponse);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
+    @PostMapping("/register1")
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request) {
         AuthResponse authResponse = authService.register(request);
 
         return ResponseEntity.ok(authResponse);
 
     }
-
+    @PostMapping("/register")
+    public ResponseEntity<Map<String,String>> registerViaToken(@RequestParam String token,
+                                      @RequestParam String password) {
+        return inviteService.validateToken(token)
+                .map(invite -> {
+                    authService.register(new RegisterRequest(invite.getUsername(), password));
+                    inviteService.markUsed(invite);
+                    return ResponseEntity.ok(Map.of("message", "User registered"));
+                })
+                .orElse(ResponseEntity.badRequest().body(Map.of("error", "Invalid or expired token")));
+    }
 
 }
