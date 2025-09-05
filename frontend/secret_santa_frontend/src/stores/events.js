@@ -4,7 +4,7 @@ import EventService from '@/services/event.service'
 export const useEventsStore = defineStore('events', {
   state: () => ({
     events: [],
-    userEvents: []
+    userEvents: [],
   }),
   actions: {
     async fetchAllEvents() {
@@ -30,6 +30,7 @@ export const useEventsStore = defineStore('events', {
     async getMyReceiver(eventId) {
       const response = await EventService.getMyReceiver(eventId)
       return response
-    }
-  }
+    },
+  },
+  persist: true,
 })

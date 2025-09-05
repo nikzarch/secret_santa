@@ -6,5 +6,5 @@ export default {
   },
   register(userData) {
     return api.post('/auth/register', userData)
-  }
+  },
 }

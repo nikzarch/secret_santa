@@ -6,7 +6,8 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     token: localStorage.getItem('token') || null,
-    loadingUser: false
+    loadingUser: false,
+    isAdmin: false,
   }),
   actions: {
     async login(credentials) {
@@ -34,13 +35,14 @@ export const useAuthStore = defineStore('auth', {
         this.loadingUser = true
         const response = await api.get('/me')
         this.user = response // {id, name, role}
+        this.isAdmin = response.role == 'ADMIN'
       } catch (err) {
-        console.error('Не удалось получить данные пользователя', err)
+        console.error('Error fetching user data', err)
         this.logout()
       } finally {
         this.loadingUser = false
       }
-    }
-  }
+    },
+  },
+  persist: true,
 })
-

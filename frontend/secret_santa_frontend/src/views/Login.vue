@@ -1,9 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-card">
-      <div class="login-logo">
-        🎅 Тайный Санта
-      </div>
+      <div class="login-logo">🎅 Тайный Санта</div>
       <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="username">Имя пользователя</label>
@@ -13,7 +11,7 @@
             type="text"
             required
             placeholder="Введите ваше имя"
-          >
+          />
         </div>
         <div class="form-group">
           <label for="password">Пароль</label>
@@ -23,12 +21,10 @@
             type="password"
             required
             placeholder="Введите ваш пароль"
-          >
+          />
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%">
-          Войти
-        </button>
-        <p v-if="error" style="color: var(--primary-color); margin-top: 1rem;">
+        <button type="submit" class="btn btn-primary" style="width: 100%">Войти</button>
+        <p v-if="error" style="color: var(--primary-color); margin-top: 1rem">
           {{ error }}
         </p>
       </form>
@@ -48,7 +44,7 @@ export default {
     const router = useRouter()
     const credentials = ref({
       name: '',
-      password: ''
+      password: '',
     })
     const error = ref('')
 
@@ -66,8 +62,8 @@ export default {
     return {
       credentials,
       error,
-      handleLogin
+      handleLogin,
     }
-  }
+  },
 }
 </script>

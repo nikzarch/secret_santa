@@ -12,12 +12,16 @@ async function request(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  })
+  const fetchOptions = { ...options, headers }
+
+  if (options.method && options.method.toUpperCase() !== 'GET' && options.body === undefined) {
+    delete fetchOptions.body
+  }
+
+  const response = await fetch(url, fetchOptions)
 
   if (!response.ok) {
+    console.log(response)
     throw new Error(`HTTP error! status: ${response.status}`)
   }
 
@@ -31,7 +35,7 @@ export default {
   post(endpoint, data) {
     return request(endpoint, {
       method: 'POST',
-      body: JSON.stringify(data),
+      ...(data && { body: JSON.stringify(data) }),
     })
   },
   put(endpoint, data) {

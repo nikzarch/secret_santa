@@ -18,7 +18,7 @@ export default {
   name: 'DashboardView',
   components: {
     AppHeader,
-    AppSidebar
-  }
+    AppSidebar,
+  },
 }
 </script>

@@ -5,9 +5,7 @@
       <p><strong>Имя:</strong> {{ user.name }}</p>
       <p><strong>Роль:</strong> {{ user.role }}</p>
     </div>
-    <button class="btn btn-outline" @click="handleLogout">
-      Выйти
-    </button>
+    <button class="btn btn-outline" @click="handleLogout">Выйти</button>
   </div>
 </template>
 
@@ -30,8 +28,8 @@ export default {
 
     return {
       user,
-      handleLogout
+      handleLogout,
     }
-  }
+  },
 }
 </script>

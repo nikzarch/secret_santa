@@ -21,5 +21,8 @@ export default {
   },
   getMyReceiver(eventId) {
     return api.get(`/events/${eventId}/my-receiver`)
-  }
+  },
+  getEventById(eventId) {
+    return api.get(`/events/${eventId}`)
+  },
 }
