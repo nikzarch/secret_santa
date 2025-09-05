@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.dto.request.AddEventRequest;
 import ru.secretsanta.dto.request.AddParticipantToEventRequest;
@@ -12,6 +14,7 @@ import ru.secretsanta.dto.request.DisactiveEventRequest;
 import ru.secretsanta.dto.response.AssignmentResponse;
 import ru.secretsanta.dto.response.EventResponse;
 import ru.secretsanta.dto.response.EventWithParticipantsResponse;
+import ru.secretsanta.entity.Event;
 import ru.secretsanta.mapper.EventMapper;
 import ru.secretsanta.service.EventService;
 
@@ -55,6 +58,22 @@ public class EventController {
     @GetMapping("/user/{username}")
     public ResponseEntity<List<EventWithParticipantsResponse>> getEventsByUser(@PathVariable String username) {
         return ResponseEntity.ok(eventService.getEventsByUserName(username).stream().map(EventMapper::toEventWithParticipantsResponse).toList());
+    }
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventResponse> getEventUserParticipateIn(@PathVariable Long eventId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            throw new RuntimeException("User is not authenticated");
+        }
+
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+
+        Event event = eventService.getEventsByUserName(username)
+                .stream().filter(ev -> {return ev.getId() == eventId;})
+                .findFirst()
+                .orElseThrow();
+        return ResponseEntity.ok(EventMapper.toEventResponse(event));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
