@@ -10,7 +10,6 @@ import ru.secretsanta.entity.User;
 import ru.secretsanta.repository.UserRepository;
 
 
-
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {

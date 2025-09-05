@@ -24,11 +24,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String,String>> handleUserNotFoundException(UserNotFoundException ex){
-        return new ResponseEntity<>(Map.of("error", "Unable to authorize, wrong password or username"),HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
+        return new ResponseEntity<>(Map.of("error", "Unable to authorize, wrong password or username"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<Map<String,String>> handleExpiredJwtException(ExpiredJwtException ex){
-        return new ResponseEntity<>(Map.of("error", "token is expired"),HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<Map<String, String>> handleExpiredJwtException(ExpiredJwtException ex) {
+        return new ResponseEntity<>(Map.of("error", "token is expired"), HttpStatus.UNAUTHORIZED);
     }
 }

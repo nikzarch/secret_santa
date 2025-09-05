@@ -1,4 +1,6 @@
 package ru.secretsanta.dto.response;
 
-public record AssignmentResponse(String receiver) {
+public record AssignmentResponse(
+        String receiver
+) {
 }

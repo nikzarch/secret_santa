@@ -9,4 +9,5 @@ public record EventResponse(
         LocalDate eventDate,
         boolean isActive,
         boolean assignmentsGenerated
-) {}
+) {
+}

@@ -1,8 +1,8 @@
 package ru.secretsanta.mapper;
 
 import ru.secretsanta.dto.request.WishlistItemRequest;
-import ru.secretsanta.entity.WishlistItem;
 import ru.secretsanta.dto.response.WishlistItemResponse;
+import ru.secretsanta.entity.WishlistItem;
 
 public class WishlistMapper {
 
@@ -16,6 +16,15 @@ public class WishlistMapper {
 
     public static WishlistItemResponse toDto(WishlistItem entity) {
         if (entity == null) return null;
-        return new WishlistItemResponse(entity.getId(), entity.getTitle(), entity.getDescription());
+        return new WishlistItemResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getLink(), entity.getPriority());
+    }
+
+    public static WishlistItem toWishlistItem(WishlistItemRequest request) {
+        return WishlistItem.builder()
+                .title(request.name())
+                .description(request.description())
+                .link(request.link())
+                .priority(request.priority())
+                .build();
     }
 }

@@ -8,4 +8,5 @@ import java.time.LocalDate;
 public record AddEventRequest(
         @NotBlank String name,
         String description,
-        @NotNull LocalDate date) {}
+        @NotNull LocalDate date) {
+}

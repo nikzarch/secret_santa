@@ -19,8 +19,9 @@ import ru.secretsanta.repository.UserRepository;
 @RequiredArgsConstructor
 public class UserController {
     private final UserRepository userRepository;
+
     @GetMapping("/me")
-    public ResponseEntity<UserShortResponse> me(){
+    public ResponseEntity<UserShortResponse> me() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {

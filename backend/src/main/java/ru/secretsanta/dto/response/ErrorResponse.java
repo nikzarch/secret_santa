@@ -1,4 +1,6 @@
 package ru.secretsanta.dto.response;
 
-public record ErrorResponse(String error) {
+public record ErrorResponse(
+        String error
+) {
 }

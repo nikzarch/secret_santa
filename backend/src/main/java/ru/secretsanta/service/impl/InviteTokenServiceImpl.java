@@ -18,7 +18,7 @@ public class InviteTokenServiceImpl implements InviteService {
 
     public InviteToken createInvite(String username) {
         InviteToken invite = new InviteToken();
-        String token = jwtUtil.generateToken(username,"USER");
+        String token = jwtUtil.generateToken(username, "USER");
         invite.setToken(token);
         invite.setUsername(username);
         invite.setExpiresAt(LocalDateTime.now().plusDays(7));

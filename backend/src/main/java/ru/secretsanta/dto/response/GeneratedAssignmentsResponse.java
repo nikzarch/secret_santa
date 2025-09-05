@@ -9,5 +9,6 @@ public record GeneratedAssignmentsResponse(
     public record AssignmentDto(
             String santaName,
             String receiverName
-    ) {}
+    ) {
+    }
 }

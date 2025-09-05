@@ -5,7 +5,9 @@ import ru.secretsanta.entity.InviteToken;
 import java.util.Optional;
 
 public interface InviteService {
-    public InviteToken createInvite(String username);
-    public Optional<InviteToken> validateToken(String token);
-    public void markUsed(InviteToken invite);
+    InviteToken createInvite(String username);
+
+    Optional<InviteToken> validateToken(String token);
+
+    void markUsed(InviteToken invite);
 }

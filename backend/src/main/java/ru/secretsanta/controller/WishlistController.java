@@ -21,24 +21,24 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     @PostMapping
-    public ResponseEntity<Map<String,String>> addItem(
+    public ResponseEntity<WishlistItemResponse> addItem(
             Authentication authentication,
-            @Valid @RequestBody WishlistItemRequest item
+            @Valid @RequestBody WishlistItemRequest request
     ) {
         String username = authentication.getName();
-        WishlistItem wishlistItem = WishlistMapper.toWishlistItemRequest(item);
-        wishlistService.addItem(username,wishlistItem );
-        return ResponseEntity.ok(Map.of("message","Item added"));
+        WishlistItem saved = wishlistService.addItem(username, WishlistMapper.toWishlistItem(request));
+        return ResponseEntity.ok(WishlistMapper.toDto(saved));
     }
 
     @PutMapping("/{itemId}")
-    public ResponseEntity<Map<String,String>> updateItem(
+    public ResponseEntity<WishlistItemResponse> updateItem(
+            Authentication authentication,
             @PathVariable Long itemId,
-            @Valid @RequestBody WishlistItemRequest item
+            @Valid @RequestBody WishlistItemRequest request
     ) {
-        WishlistItem wishlistItem = WishlistMapper.toWishlistItemRequest(item);
-        wishlistService.updateItem(itemId, wishlistItem);
-        return ResponseEntity.ok(Map.of("message","Item updated"));
+        String username = authentication.getName();
+        WishlistItem updated = wishlistService.updateItem(username, itemId, WishlistMapper.toWishlistItemRequest(request));
+        return ResponseEntity.ok(WishlistMapper.toDto(updated));
     }
 
     @DeleteMapping("/{itemId}")
@@ -50,6 +50,8 @@ public class WishlistController {
     @GetMapping
     public ResponseEntity<List<WishlistItemResponse>> getWishlist(Authentication authentication) {
         String username = authentication.getName();
-        return ResponseEntity.ok(wishlistService.getWishlist(username).stream().map(WishlistMapper::toDto).toList());
+        List<WishlistItem> items = wishlistService.getWishlist(username);
+        List<WishlistItemResponse> dtoList = items.stream().map(WishlistMapper::toDto).toList();
+        return ResponseEntity.ok(dtoList);
     }
 }

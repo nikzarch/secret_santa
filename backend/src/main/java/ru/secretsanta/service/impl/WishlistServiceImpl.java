@@ -17,22 +17,20 @@ public class WishlistServiceImpl implements WishlistService {
     private final UserRepository userRepository;
 
     @Override
-    public void addItem(String username, WishlistItem item) {
+    public WishlistItem addItem(String username, WishlistItem item) {
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         item.setUser(user);
-        wishlistRepository.save(item);
+        return wishlistRepository.save(item);
     }
 
     @Override
-    public void updateItem(Long itemId, WishlistItem updatedItem) {
+    public WishlistItem updateItem(String username, Long itemId, WishlistItem updatedItem) {
         WishlistItem existing = wishlistRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
         existing.setTitle(updatedItem.getTitle());
         existing.setDescription(updatedItem.getDescription());
-        existing.setLink(updatedItem.getLink());
-        existing.setPriority(updatedItem.getPriority());
-        wishlistRepository.save(existing);
+        return wishlistRepository.save(existing);
     }
 
     @Override

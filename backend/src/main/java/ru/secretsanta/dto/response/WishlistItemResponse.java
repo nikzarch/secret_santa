@@ -1,6 +1,6 @@
 package ru.secretsanta.dto.response;
 
 public record WishlistItemResponse(
-        Long id, String name, String description
+        Long id, String name, String description, String link, Integer priority
 ) {
 }

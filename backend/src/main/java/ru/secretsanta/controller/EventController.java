@@ -32,21 +32,21 @@ public class EventController {
     @PostMapping
     public ResponseEntity<Map<String, String>> addEvent(@RequestBody @Valid AddEventRequest request) {
         eventService.addEvent(request);
-        return ResponseEntity.ok(Map.of("message","Event added succesfully"));
+        return ResponseEntity.ok(Map.of("message", "Event added succesfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/participants")
     public ResponseEntity<Map<String, String>> addParticipant(@RequestBody @Valid AddParticipantToEventRequest request) {
         eventService.addParticipantToEvent(request);
-        return ResponseEntity.ok(Map.of("message","Participant added succesfully"));
+        return ResponseEntity.ok(Map.of("message", "Participant added succesfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/disactive")
     public ResponseEntity<Map<String, String>> disactiveEvent(@RequestBody @Valid DisactiveEventRequest request) {
         eventService.disactiveEvent(request);
-        return ResponseEntity.ok(Map.of("message","Event disactivated succesfully"));
+        return ResponseEntity.ok(Map.of("message", "Event disactivated succesfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -59,8 +59,9 @@ public class EventController {
     public ResponseEntity<List<EventWithParticipantsResponse>> getEventsByUser(@PathVariable String username) {
         return ResponseEntity.ok(eventService.getEventsByUserName(username).stream().map(EventMapper::toEventWithParticipantsResponse).toList());
     }
+
     @GetMapping("/{eventId}")
-    public ResponseEntity<EventResponse> getEventUserParticipateIn(@PathVariable Long eventId){
+    public ResponseEntity<EventResponse> getEventUserParticipateIn(@PathVariable Long eventId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
@@ -70,7 +71,9 @@ public class EventController {
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 
         Event event = eventService.getEventsByUserName(username)
-                .stream().filter(ev -> {return ev.getId() == eventId;})
+                .stream().filter(ev -> {
+                    return ev.getId() == eventId;
+                })
                 .findFirst()
                 .orElseThrow();
         return ResponseEntity.ok(EventMapper.toEventResponse(event));
@@ -80,7 +83,7 @@ public class EventController {
     @PostMapping("/{eventId}/generate-assignments")
     public ResponseEntity<Map<String, String>> generateAssignments(@PathVariable Long eventId) {
         eventService.generateAssignments(eventId);
-        return ResponseEntity.ok(Map.of("message","Assignment generated successfully"));
+        return ResponseEntity.ok(Map.of("message", "Assignment generated successfully"));
     }
 
     @GetMapping("/{eventId}/my-receiver")

@@ -6,8 +6,8 @@ import ru.secretsanta.dto.request.AddEventRequest;
 import ru.secretsanta.dto.request.AddParticipantToEventRequest;
 import ru.secretsanta.dto.request.DisactiveEventRequest;
 import ru.secretsanta.entity.Event;
-import ru.secretsanta.entity.User;
 import ru.secretsanta.entity.SantaAssignment;
+import ru.secretsanta.entity.User;
 import ru.secretsanta.exception.UserNotFoundException;
 import ru.secretsanta.repository.EventRepository;
 import ru.secretsanta.repository.UserRepository;
@@ -89,6 +89,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         return event.getParticipants();
     }
+
     @Override
     public void generateAssignments(Long eventId) {
         Event event = eventRepository.findById(eventId)
