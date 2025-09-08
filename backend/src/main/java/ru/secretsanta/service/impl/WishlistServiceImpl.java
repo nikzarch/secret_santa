@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.secretsanta.entity.User;
 import ru.secretsanta.entity.WishlistItem;
+import ru.secretsanta.exception.TooMuchWishlistItemsForUserException;
+import ru.secretsanta.exception.UserNotFoundException;
 import ru.secretsanta.repository.UserRepository;
 import ru.secretsanta.repository.WishlistRepository;
 import ru.secretsanta.service.WishlistService;
@@ -15,12 +17,17 @@ import java.util.List;
 public class WishlistServiceImpl implements WishlistService {
     private final WishlistRepository wishlistRepository;
     private final UserRepository userRepository;
+    private final int MAX_ITEMS_FOR_USER = 25;
 
     @Override
     public WishlistItem addItem(String username, WishlistItem item) {
         User user = userRepository.findByName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         item.setUser(user);
+        List<WishlistItem> wishlistItemsOfUser = wishlistRepository.findByUser(user);
+        if (wishlistItemsOfUser.size() > MAX_ITEMS_FOR_USER){
+            throw new TooMuchWishlistItemsForUserException("too much wishlist items for" + user.getName());
+        }
         return wishlistRepository.save(item);
     }
 

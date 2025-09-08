@@ -17,14 +17,25 @@ public class HashUtil {
         return salt;
     }
 
-    public String hashPassword(String password, byte[] salt) {
+    public HashResult hashPassword(String password) {
         try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] salt = generateSalt();
+            md.update(salt);
+            byte[] hashedPassword = md.digest(password.getBytes());
+            return new HashResult(bytesToHex(hashedPassword),salt);
+        } catch (NoSuchAlgorithmException exc) {
+            throw new RuntimeException("Ошибка хэширования пароля", exc);
+        }
+    }
+    public HashResult hashPassword(String password, byte[] salt){
+        try{
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(salt);
             byte[] hashedPassword = md.digest(password.getBytes());
-            return bytesToHex(hashedPassword);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Ошибка хэширования пароля", e);
+            return new HashResult(bytesToHex(hashedPassword),salt);
+        }catch (NoSuchAlgorithmException exc) {
+            throw new RuntimeException("Ошибка хэширования пароля", exc);
         }
     }
 

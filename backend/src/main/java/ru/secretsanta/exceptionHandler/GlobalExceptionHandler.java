@@ -3,8 +3,10 @@ package ru.secretsanta.exceptionHandler;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import ru.secretsanta.dto.response.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.secretsanta.exception.TooMuchWishlistItemsForUserException;
 import ru.secretsanta.exception.UserNotFoundException;
 
 import java.time.LocalDateTime;
@@ -15,21 +17,26 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException exc) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("error", ex.getMessage());
+        body.put("error", exc.getMessage());
         body.put("status", HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
-        return new ResponseEntity<>(Map.of("error", "Unable to authorize, wrong password or username"), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException exc) {
+        return new ResponseEntity<>(Map.of("error", "Unable to authorize, wrong password or username"), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<Map<String, String>> handleExpiredJwtException(ExpiredJwtException ex) {
+    public ResponseEntity<Map<String, String>> handleExpiredJwtException(ExpiredJwtException exc) {
         return new ResponseEntity<>(Map.of("error", "token is expired"), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(TooMuchWishlistItemsForUserException.class)
+    public ResponseEntity<ErrorResponse> handleTooMuchWishlistItemsForUserException(TooMuchWishlistItemsForUserException exc){
+        return new ResponseEntity<>(new ErrorResponse(exc.getMessage()),HttpStatus.BAD_REQUEST);
     }
 }

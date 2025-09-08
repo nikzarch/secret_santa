@@ -71,9 +71,7 @@ public class EventController {
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 
         Event event = eventService.getEventsByUserName(username)
-                .stream().filter(ev -> {
-                    return ev.getId() == eventId;
-                })
+                .stream().filter(ev -> ev.getId() == eventId)
                 .findFirst()
                 .orElseThrow();
         return ResponseEntity.ok(EventMapper.toEventResponse(event));

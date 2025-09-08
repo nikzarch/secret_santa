@@ -1,8 +1,9 @@
 package ru.secretsanta.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 
 public record DisactiveEventRequest(
-        @NotBlank Long eventId
+        @JsonProperty("event_id") @NotNull Long eventId
 ) {
 }
