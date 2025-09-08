@@ -37,7 +37,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         HashResult hashResult = hashUtil.hashPassword(registerRequest.password());
-
         User user = User.builder()
                 .name(registerRequest.name())
                 .passwordHash(hashResult.hashed())
@@ -55,8 +54,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByName(loginRequest.name())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        HashResult hashResult = hashUtil.hashPassword(loginRequest.password(),user.getSalt().getBytes());
-
+        HashResult hashResult = hashUtil.hashPassword(loginRequest.password(),Base64.getDecoder().decode(user.getSalt()));
         if (!hashResult.hashed().equals(user.getPasswordHash())) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
