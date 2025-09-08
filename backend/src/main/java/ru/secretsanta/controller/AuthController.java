@@ -2,15 +2,16 @@ package ru.secretsanta.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.dto.request.LoginRequest;
 import ru.secretsanta.dto.request.RegisterRequest;
 import ru.secretsanta.dto.response.AuthResponse;
+import ru.secretsanta.dto.response.ErrorResponse;
+import ru.secretsanta.dto.response.RegisterViaTokenResponse;
 import ru.secretsanta.service.AuthService;
 import ru.secretsanta.service.InviteService;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -30,15 +31,18 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> registerViaToken(@RequestParam String token,
-                                                                @RequestParam String password) {
+    public ResponseEntity registerViaToken(@RequestParam String token,
+                                           @RequestParam String password) {
         return inviteService.validateToken(token)
                 .map(invite -> {
                     authService.register(new RegisterRequest(invite.getUsername(), password));
                     inviteService.markUsed(invite);
-                    return ResponseEntity.ok(Map.of("message", "User registered"));
+
+                    return ResponseEntity.ok(
+                            new RegisterViaTokenResponse("user successfully registered",invite.getUsername())
+                    );
                 })
-                .orElse(ResponseEntity.badRequest().body(Map.of("error", "Invalid or expired token")));
+                .orElse(new ResponseEntity(new ErrorResponse("token has expired"), HttpStatus.GONE));
     }
 
 }
