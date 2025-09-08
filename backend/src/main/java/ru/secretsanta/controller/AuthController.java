@@ -1,5 +1,6 @@
 package ru.secretsanta.controller;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import ru.secretsanta.dto.request.RegisterRequest;
 import ru.secretsanta.dto.response.AuthResponse;
 import ru.secretsanta.dto.response.ErrorResponse;
 import ru.secretsanta.dto.response.RegisterViaTokenResponse;
+import ru.secretsanta.exception.TokenExpiredException;
 import ru.secretsanta.service.AuthService;
 import ru.secretsanta.service.InviteService;
 
@@ -31,18 +33,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity registerViaToken(@RequestParam String token,
-                                           @RequestParam String password) {
-        return inviteService.validateToken(token)
-                .map(invite -> {
-                    authService.register(new RegisterRequest(invite.getUsername(), password));
-                    inviteService.markUsed(invite);
-
-                    return ResponseEntity.ok(
-                            new RegisterViaTokenResponse("user successfully registered",invite.getUsername())
-                    );
-                })
-                .orElse(new ResponseEntity(new ErrorResponse("token has expired"), HttpStatus.GONE));
+    public ResponseEntity<?> registerViaToken(@RequestParam String token,
+                                              @RequestParam String password) {
+        try {
+            RegisterViaTokenResponse response = authService.registerViaToken(token, password);
+            return ResponseEntity.ok(response);
+        } catch (TokenExpiredException exc) {
+            return ResponseEntity.status(HttpStatus.GONE)
+                    .body(new ErrorResponse("token has expired"));
+        }
     }
 
 }
