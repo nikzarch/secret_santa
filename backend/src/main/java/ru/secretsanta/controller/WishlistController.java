@@ -6,13 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.dto.request.WishlistItemRequest;
+import ru.secretsanta.dto.response.GenericResponse;
 import ru.secretsanta.dto.response.WishlistItemResponse;
 import ru.secretsanta.entity.WishlistItem;
 import ru.secretsanta.mapper.WishlistMapper;
 import ru.secretsanta.service.WishlistService;
 
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/v1/wishlist")
@@ -42,9 +43,9 @@ public class WishlistController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<Map<String,String>> deleteItem(@PathVariable Long itemId) {
+    public ResponseEntity<GenericResponse> deleteItem(@PathVariable Long itemId) {
         wishlistService.deleteItem(itemId);
-        return ResponseEntity.ok(Map.of("message","Item deleted"));
+        return ResponseEntity.ok(new GenericResponse("Item deleted"));
     }
 
     @GetMapping

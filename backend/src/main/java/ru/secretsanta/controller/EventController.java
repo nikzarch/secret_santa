@@ -14,12 +14,12 @@ import ru.secretsanta.dto.request.DisactiveEventRequest;
 import ru.secretsanta.dto.response.AssignmentResponse;
 import ru.secretsanta.dto.response.EventResponse;
 import ru.secretsanta.dto.response.EventWithParticipantsResponse;
+import ru.secretsanta.dto.response.GenericResponse;
 import ru.secretsanta.entity.Event;
 import ru.secretsanta.mapper.EventMapper;
 import ru.secretsanta.service.EventService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/events")
@@ -30,23 +30,23 @@ public class EventController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Map<String, String>> addEvent(@RequestBody @Valid AddEventRequest request) {
+    public ResponseEntity<GenericResponse> addEvent(@RequestBody @Valid AddEventRequest request) {
         eventService.addEvent(request);
-        return ResponseEntity.ok(Map.of("message", "Event added succesfully"));
+        return ResponseEntity.ok(new GenericResponse( "Event added succesfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/participants")
-    public ResponseEntity<Map<String, String>> addParticipant(@RequestBody @Valid AddParticipantToEventRequest request) {
+    public ResponseEntity<GenericResponse> addParticipant(@RequestBody @Valid AddParticipantToEventRequest request) {
         eventService.addParticipantToEvent(request);
-        return ResponseEntity.ok(Map.of("message", "Participant added succesfully"));
+        return ResponseEntity.ok(new GenericResponse("Participant added succesfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/disactive")
-    public ResponseEntity<Map<String, String>> disactiveEvent(@RequestBody @Valid DisactiveEventRequest request) {
+    public ResponseEntity<GenericResponse> disactiveEvent(@RequestBody @Valid DisactiveEventRequest request) {
         eventService.disactiveEvent(request);
-        return ResponseEntity.ok(Map.of("message", "Event disactivated succesfully"));
+        return ResponseEntity.ok(new GenericResponse("Event disactivated succesfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -79,9 +79,9 @@ public class EventController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{eventId}/generate-assignments")
-    public ResponseEntity<Map<String, String>> generateAssignments(@PathVariable Long eventId) {
+    public ResponseEntity<GenericResponse> generateAssignments(@PathVariable Long eventId) {
         eventService.generateAssignments(eventId);
-        return ResponseEntity.ok(Map.of("message", "Assignment generated successfully"));
+        return ResponseEntity.ok(new GenericResponse("Assignment generated successfully"));
     }
 
     @GetMapping("/{eventId}/my-receiver")
