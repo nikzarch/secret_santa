@@ -1,19 +1,16 @@
 package ru.secretsanta.controller;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.dto.request.LoginRequest;
-import ru.secretsanta.dto.request.RegisterRequest;
 import ru.secretsanta.dto.response.AuthResponse;
 import ru.secretsanta.dto.response.ErrorResponse;
 import ru.secretsanta.dto.response.RegisterViaTokenResponse;
 import ru.secretsanta.exception.TokenExpiredException;
 import ru.secretsanta.service.AuthService;
-import ru.secretsanta.service.InviteService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -21,8 +18,6 @@ import ru.secretsanta.service.InviteService;
 public class AuthController {
 
     private final AuthService authService;
-
-    private final InviteService inviteService;
 
 
     @PostMapping("/login")

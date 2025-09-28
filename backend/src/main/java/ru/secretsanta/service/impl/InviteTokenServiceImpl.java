@@ -2,7 +2,9 @@ package ru.secretsanta.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.secretsanta.dto.response.InviteResponse;
 import ru.secretsanta.entity.InviteToken;
+import ru.secretsanta.mapper.InviteMapper;
 import ru.secretsanta.repository.InviteTokenRepository;
 import ru.secretsanta.service.InviteService;
 import ru.secretsanta.util.JWTUtil;
@@ -16,13 +18,13 @@ public class InviteTokenServiceImpl implements InviteService {
     private final JWTUtil jwtUtil;
     private final InviteTokenRepository inviteTokenRepository;
 
-    public InviteToken createInvite(String username) {
+    public InviteResponse createInvite(String username) {
         InviteToken invite = new InviteToken();
         String token = jwtUtil.generateToken(username, "USER");
         invite.setToken(token);
         invite.setUsername(username);
         invite.setExpiresAt(LocalDateTime.now().plusDays(7));
-        return inviteTokenRepository.save(invite);
+        return InviteMapper.toInviteResponse(inviteTokenRepository.save(invite));
     }
 
     public Optional<InviteToken> validateToken(String token) {

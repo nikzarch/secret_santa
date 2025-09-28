@@ -1,15 +1,16 @@
 package ru.secretsanta.service;
 
+import ru.secretsanta.dto.response.WishlistItemResponse;
 import ru.secretsanta.entity.WishlistItem;
 
 import java.util.List;
 
 public interface WishlistService {
-    WishlistItem addItem(String username, WishlistItem item);
+    WishlistItemResponse addItem(String username, WishlistItem item);
 
-    WishlistItem updateItem(String username, Long itemId, WishlistItem updatedItem);
+    WishlistItemResponse updateItem(String username, Long itemId, WishlistItem updatedItem);
 
     void deleteItem(Long itemId);
 
-    List<WishlistItem> getWishlist(String username);
+    List<WishlistItemResponse> getWishlist(String username);
 }

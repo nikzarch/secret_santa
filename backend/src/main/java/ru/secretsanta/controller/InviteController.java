@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.secretsanta.dto.response.InviteResponse;
-import ru.secretsanta.entity.InviteToken;
 import ru.secretsanta.service.InviteService;
 
 @RestController
@@ -20,7 +19,7 @@ public class InviteController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<InviteResponse> createInvite(@RequestParam String username) {
-        InviteToken invite = inviteService.createInvite(username);
-        return ResponseEntity.ok(new InviteResponse(invite.getUsername(), invite.getToken()));
+        InviteResponse inviteResponse = inviteService.createInvite(username);
+        return ResponseEntity.ok(inviteResponse);
     }
 }

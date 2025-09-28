@@ -2,10 +2,12 @@ package ru.secretsanta.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.secretsanta.dto.response.WishlistItemResponse;
 import ru.secretsanta.entity.User;
 import ru.secretsanta.entity.WishlistItem;
 import ru.secretsanta.exception.TooMuchWishlistItemsForUserException;
 import ru.secretsanta.exception.UserNotFoundException;
+import ru.secretsanta.mapper.WishlistMapper;
 import ru.secretsanta.repository.UserRepository;
 import ru.secretsanta.repository.WishlistRepository;
 import ru.secretsanta.service.WishlistService;
@@ -20,7 +22,7 @@ public class WishlistServiceImpl implements WishlistService {
     private final int MAX_ITEMS_FOR_USER = 25;
 
     @Override
-    public WishlistItem addItem(String username, WishlistItem item) {
+    public WishlistItemResponse addItem(String username, WishlistItem item) {
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         item.setUser(user);
@@ -28,16 +30,16 @@ public class WishlistServiceImpl implements WishlistService {
         if (wishlistItemsOfUser.size() > MAX_ITEMS_FOR_USER){
             throw new TooMuchWishlistItemsForUserException("too much wishlist items for" + user.getName());
         }
-        return wishlistRepository.save(item);
+        return WishlistMapper.toWishlistItemResponse(wishlistRepository.save(item));
     }
 
     @Override
-    public WishlistItem updateItem(String username, Long itemId, WishlistItem updatedItem) {
+    public WishlistItemResponse updateItem(String username, Long itemId, WishlistItem updatedItem) {
         WishlistItem existing = wishlistRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
         existing.setTitle(updatedItem.getTitle());
         existing.setDescription(updatedItem.getDescription());
-        return wishlistRepository.save(existing);
+        return WishlistMapper.toWishlistItemResponse(wishlistRepository.save(existing));
     }
 
     @Override
@@ -46,9 +48,9 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public List<WishlistItem> getWishlist(String username) {
+    public List<WishlistItemResponse> getWishlist(String username) {
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return wishlistRepository.findByUser(user);
+        return wishlistRepository.findByUser(user).stream().map(WishlistMapper::toWishlistItemResponse).toList();
     }
 }

@@ -14,7 +14,7 @@ public class WishlistMapper {
         return item;
     }
 
-    public static WishlistItemResponse toDto(WishlistItem entity) {
+    public static WishlistItemResponse toWishlistItemResponse(WishlistItem entity) {
         if (entity == null) return null;
         return new WishlistItemResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getLink(), entity.getPriority());
     }

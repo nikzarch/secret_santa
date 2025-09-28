@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.dto.request.WishlistItemRequest;
 import ru.secretsanta.dto.response.GenericResponse;
 import ru.secretsanta.dto.response.WishlistItemResponse;
-import ru.secretsanta.entity.WishlistItem;
 import ru.secretsanta.mapper.WishlistMapper;
 import ru.secretsanta.service.WishlistService;
 
@@ -27,8 +26,8 @@ public class WishlistController {
             @Valid @RequestBody WishlistItemRequest request
     ) {
         String username = authentication.getName();
-        WishlistItem saved = wishlistService.addItem(username, WishlistMapper.toWishlistItem(request));
-        return ResponseEntity.ok(WishlistMapper.toDto(saved));
+        WishlistItemResponse saved = wishlistService.addItem(username, WishlistMapper.toWishlistItem(request));
+        return ResponseEntity.ok(saved);
     }
 
     @PutMapping("/{itemId}")
@@ -38,8 +37,8 @@ public class WishlistController {
             @Valid @RequestBody WishlistItemRequest request
     ) {
         String username = authentication.getName();
-        WishlistItem updated = wishlistService.updateItem(username, itemId, WishlistMapper.toWishlistItemRequest(request));
-        return ResponseEntity.ok(WishlistMapper.toDto(updated));
+        WishlistItemResponse updated = wishlistService.updateItem(username, itemId, WishlistMapper.toWishlistItemRequest(request));
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{itemId}")
@@ -51,8 +50,7 @@ public class WishlistController {
     @GetMapping
     public ResponseEntity<List<WishlistItemResponse>> getWishlist(Authentication authentication) {
         String username = authentication.getName();
-        List<WishlistItem> items = wishlistService.getWishlist(username);
-        List<WishlistItemResponse> dtoList = items.stream().map(WishlistMapper::toDto).toList();
-        return ResponseEntity.ok(dtoList);
+        List<WishlistItemResponse> items = wishlistService.getWishlist(username);
+        return ResponseEntity.ok(items);
     }
 }

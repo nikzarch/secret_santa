@@ -5,10 +5,15 @@ import org.springframework.stereotype.Service;
 import ru.secretsanta.dto.request.AddEventRequest;
 import ru.secretsanta.dto.request.AddParticipantToEventRequest;
 import ru.secretsanta.dto.request.DisactiveEventRequest;
+import ru.secretsanta.dto.response.EventResponse;
+import ru.secretsanta.dto.response.EventWithParticipantsResponse;
+import ru.secretsanta.dto.response.UserShortResponse;
 import ru.secretsanta.entity.Event;
 import ru.secretsanta.entity.SantaAssignment;
 import ru.secretsanta.entity.User;
 import ru.secretsanta.exception.UserNotFoundException;
+import ru.secretsanta.mapper.EventMapper;
+import ru.secretsanta.mapper.UserMapper;
 import ru.secretsanta.repository.EventRepository;
 import ru.secretsanta.repository.UserRepository;
 import ru.secretsanta.service.EventService;
@@ -72,22 +77,22 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+    public List<EventResponse> getAllEvents() {
+        return eventRepository.findAll().stream().map(EventMapper::toEventResponse).toList();
     }
 
     @Override
-    public List<Event> getEventsByUserName(String name) {
+    public List<EventWithParticipantsResponse> getEventsByUserName(String name) {
         User user = userRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return eventRepository.findByParticipantsContaining(user);
+        return eventRepository.findByParticipantsContaining(user).stream().map(EventMapper::toEventWithParticipantsResponse).toList();
     }
 
     @Override
-    public List<User> getParticipants(Long eventId) {
+    public List<UserShortResponse> getParticipants(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        return event.getParticipants();
+        return event.getParticipants().stream().map(UserMapper::toUserShortResponse).toList();
     }
 
     @Override
@@ -137,16 +142,17 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public User getReceiverForUser(Long eventId, String username) {
+    public UserShortResponse getReceiverForUser(Long eventId, String username) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
         User user = userRepository.findByName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return event.getAssignments().stream()
                 .filter(a -> a.getSanta().equals(user))
                 .map(SantaAssignment::getReceiver)
+                .map(UserMapper::toUserShortResponse)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No assignment found"));
     }

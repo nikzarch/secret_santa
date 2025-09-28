@@ -2,8 +2,10 @@ package ru.secretsanta.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.secretsanta.dto.response.UserShortResponse;
 import ru.secretsanta.entity.User;
 import ru.secretsanta.exception.UserNotFoundException;
+import ru.secretsanta.mapper.UserMapper;
 import ru.secretsanta.repository.UserRepository;
 import ru.secretsanta.service.UserService;
 
@@ -14,9 +16,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User getUserByName(String name) {
-        return userRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public UserShortResponse getUserByName(String name) {
+        return UserMapper.toUserShortResponse(userRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("User not found")));
     }
 
     @Override

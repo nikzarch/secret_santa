@@ -32,36 +32,36 @@ public class EventController {
     @PostMapping
     public ResponseEntity<GenericResponse> addEvent(@RequestBody @Valid AddEventRequest request) {
         eventService.addEvent(request);
-        return ResponseEntity.ok(new GenericResponse( "Event added succesfully"));
+        return ResponseEntity.ok(new GenericResponse("Event added successfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/participants")
     public ResponseEntity<GenericResponse> addParticipant(@RequestBody @Valid AddParticipantToEventRequest request) {
         eventService.addParticipantToEvent(request);
-        return ResponseEntity.ok(new GenericResponse("Participant added succesfully"));
+        return ResponseEntity.ok(new GenericResponse("Participant added successfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/disactive")
     public ResponseEntity<GenericResponse> disactiveEvent(@RequestBody @Valid DisactiveEventRequest request) {
         eventService.disactiveEvent(request);
-        return ResponseEntity.ok(new GenericResponse("Event disactivated succesfully"));
+        return ResponseEntity.ok(new GenericResponse("Event disactivated successfully"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<EventResponse>> getAllEvents() {
-        return ResponseEntity.ok(eventService.getAllEvents().stream().map(EventMapper::toEventResponse).toList());
+        return ResponseEntity.ok(eventService.getAllEvents());
     }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<List<EventWithParticipantsResponse>> getEventsByUser(@PathVariable String username) {
-        return ResponseEntity.ok(eventService.getEventsByUserName(username).stream().map(EventMapper::toEventWithParticipantsResponse).toList());
+        return ResponseEntity.ok(eventService.getEventsByUserName(username));
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<EventResponse> getEventUserParticipateIn(@PathVariable Long eventId) {
+    public ResponseEntity<EventWithParticipantsResponse> getEventUserParticipateIn(@PathVariable Long eventId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
@@ -70,11 +70,11 @@ public class EventController {
 
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 
-        Event event = eventService.getEventsByUserName(username)
-                .stream().filter(ev -> ev.getId() == eventId)
+        EventWithParticipantsResponse event = eventService.getEventsByUserName(username)
+                .stream().filter(ev -> ev.id() == eventId)
                 .findFirst()
                 .orElseThrow();
-        return ResponseEntity.ok(EventMapper.toEventResponse(event));
+        return ResponseEntity.ok(event);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -89,7 +89,7 @@ public class EventController {
                                                             @PathVariable Long eventId) {
         String username = authentication.getName();
         return ResponseEntity.ok(
-                new AssignmentResponse(eventService.getReceiverForUser(eventId, username).getName())
+                new AssignmentResponse(eventService.getReceiverForUser(eventId, username).name())
         );
     }
 }
