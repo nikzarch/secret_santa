@@ -1,5 +1,7 @@
 package ru.secretsanta.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.secretsanta.dto.response.WishlistItemResponse;
 import ru.secretsanta.entity.WishlistItem;
 
@@ -12,5 +14,5 @@ public interface WishlistService {
 
     void deleteItem(Long itemId);
 
-    List<WishlistItemResponse> getWishlist(String username);
+    Page<WishlistItemResponse> getWishlist(String username, Pageable pageable);
 }

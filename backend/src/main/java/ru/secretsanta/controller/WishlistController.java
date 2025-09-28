@@ -2,6 +2,8 @@ package ru.secretsanta.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -48,9 +50,8 @@ public class WishlistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistItemResponse>> getWishlist(Authentication authentication) {
+    public ResponseEntity<Page<WishlistItemResponse>> getWishlist(Authentication authentication, Pageable pageable) {
         String username = authentication.getName();
-        List<WishlistItemResponse> items = wishlistService.getWishlist(username);
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(wishlistService.getWishlist(username,pageable));
     }
 }

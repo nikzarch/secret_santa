@@ -1,5 +1,7 @@
 package ru.secretsanta.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.secretsanta.dto.request.AddEventRequest;
 import ru.secretsanta.dto.request.AddParticipantToEventRequest;
 import ru.secretsanta.dto.request.DisactiveEventRequest;
@@ -22,11 +24,12 @@ public interface EventService {
 
     void disactiveEvent(DisactiveEventRequest request);
 
-    List<EventResponse> getAllEvents();
+    Page<EventResponse> getAllEvents(Pageable pageable);
 
-    List<EventWithParticipantsResponse> getEventsByUserName(String name);
+    Page<EventWithParticipantsResponse> getEventsByUserName(String name, Pageable pageable);
+    EventWithParticipantsResponse getEventUserParticipateIn(String name, Long eventId);
 
-    List<UserShortResponse> getParticipants(Long eventId);
+    Page<UserShortResponse> getParticipants(Long eventId, Pageable pageable);
 
     void generateAssignments(Long eventId);
 

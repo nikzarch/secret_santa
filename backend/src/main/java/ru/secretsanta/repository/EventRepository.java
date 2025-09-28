@@ -1,5 +1,7 @@
 package ru.secretsanta.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,20 +18,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findByName(String name);
 
-    List<Event> findAll();
+    Page<Event> findAll(Pageable pageable);
 
-    List<Event> findByIsActiveTrue();
 
     @Query("SELECT e FROM Event e JOIN e.participants u WHERE u = :user")
-    List<Event> findAllByParticipant(@Param("user") User user);
-
-    List<Event> findByAssignmentsGeneratedTrue();
+    Page<Event> findAllByParticipant(@Param("user") User user, Pageable pageable);
 
 
-    List<Event> findByEventDateBefore(LocalDate date);
-
-    List<Event> findByEventDateAfter(LocalDate date);
-
-    List<Event> findByParticipantsContaining(User user);
+    Page<Event> findByParticipantsContaining(User user, Pageable pageable);
 
 }

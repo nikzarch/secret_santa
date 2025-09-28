@@ -1,6 +1,8 @@
 package ru.secretsanta.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.secretsanta.dto.request.AddEventRequest;
 import ru.secretsanta.dto.request.AddParticipantToEventRequest;
@@ -13,6 +15,7 @@ import ru.secretsanta.entity.SantaAssignment;
 import ru.secretsanta.entity.User;
 import ru.secretsanta.exception.UserNotFoundException;
 import ru.secretsanta.mapper.EventMapper;
+import ru.secretsanta.mapper.PageMapper;
 import ru.secretsanta.mapper.UserMapper;
 import ru.secretsanta.repository.EventRepository;
 import ru.secretsanta.repository.UserRepository;
@@ -77,22 +80,29 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventResponse> getAllEvents() {
-        return eventRepository.findAll().stream().map(EventMapper::toEventResponse).toList();
+    public Page<EventResponse> getAllEvents(Pageable pageable) {
+        return eventRepository.findAll(pageable).map(EventMapper::toEventResponse);
     }
 
     @Override
-    public List<EventWithParticipantsResponse> getEventsByUserName(String name) {
+    public Page<EventWithParticipantsResponse> getEventsByUserName(String name, Pageable pageable) {
         User user = userRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return eventRepository.findByParticipantsContaining(user).stream().map(EventMapper::toEventWithParticipantsResponse).toList();
+        return eventRepository.findByParticipantsContaining(user,pageable).map(EventMapper::toEventWithParticipantsResponse);
     }
 
     @Override
-    public List<UserShortResponse> getParticipants(Long eventId) {
+    public Page<UserShortResponse> getParticipants(Long eventId, Pageable pageable) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        return event.getParticipants().stream().map(UserMapper::toUserShortResponse).toList();
+        return PageMapper.listToPage(event.getParticipants().stream().map(UserMapper::toUserShortResponse).toList(),pageable);
+    }
+
+    @Override
+    public EventWithParticipantsResponse getEventUserParticipateIn(String name, Long id){
+        User user = userRepository.findByName(name).orElseThrow(() -> new UserNotFoundException("User not found"));
+        Event event = eventRepository.findAllByParticipant(user,Pageable.unpaged()).stream().filter(ev -> ev.getId() == id).findFirst().orElseThrow();
+        return EventMapper.toEventWithParticipantsResponse(event);
     }
 
     @Override

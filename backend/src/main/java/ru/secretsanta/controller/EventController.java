@@ -2,6 +2,10 @@ package ru.secretsanta.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -51,13 +55,13 @@ public class EventController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<EventResponse>> getAllEvents() {
-        return ResponseEntity.ok(eventService.getAllEvents());
+    public ResponseEntity<Page<EventResponse>> getAllEvents(Pageable pageable) {
+        return ResponseEntity.ok(eventService.getAllEvents(pageable));
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<List<EventWithParticipantsResponse>> getEventsByUser(@PathVariable String username) {
-        return ResponseEntity.ok(eventService.getEventsByUserName(username));
+    public ResponseEntity<Page<EventWithParticipantsResponse>> getEventsByUser(@PathVariable String username, @PageableDefault(page=0,size = 25,sort = "eventDate",direction =  Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(eventService.getEventsByUserName(username,pageable));
     }
 
     @GetMapping("/{eventId}")
@@ -70,11 +74,7 @@ public class EventController {
 
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 
-        EventWithParticipantsResponse event = eventService.getEventsByUserName(username)
-                .stream().filter(ev -> ev.id() == eventId)
-                .findFirst()
-                .orElseThrow();
-        return ResponseEntity.ok(event);
+        return ResponseEntity.ok(eventService.getEventUserParticipateIn(username,eventId));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

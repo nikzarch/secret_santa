@@ -1,6 +1,8 @@
 package ru.secretsanta.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.secretsanta.dto.response.WishlistItemResponse;
 import ru.secretsanta.entity.User;
@@ -26,7 +28,7 @@ public class WishlistServiceImpl implements WishlistService {
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         item.setUser(user);
-        List<WishlistItem> wishlistItemsOfUser = wishlistRepository.findByUser(user);
+        List<WishlistItem> wishlistItemsOfUser = wishlistRepository.findByUser(user,Pageable.unpaged()).toList();
         if (wishlistItemsOfUser.size() > MAX_ITEMS_FOR_USER){
             throw new TooMuchWishlistItemsForUserException("too much wishlist items for" + user.getName());
         }
@@ -48,9 +50,9 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public List<WishlistItemResponse> getWishlist(String username) {
+    public Page<WishlistItemResponse> getWishlist(String username, Pageable pageable) {
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return wishlistRepository.findByUser(user).stream().map(WishlistMapper::toWishlistItemResponse).toList();
+        return wishlistRepository.findByUser(user,pageable).map(WishlistMapper::toWishlistItemResponse);
     }
 }
