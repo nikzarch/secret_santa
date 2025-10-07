@@ -64,7 +64,8 @@ public class EventController {
 
     @PostMapping("/{eventId}/generate-assignments")
     public ResponseEntity<GenericResponse> generateAssignments(@PathVariable Long eventId) {
-        eventService.generateAssignments(eventId, );
+        User currentUser = userService.getCurrentUser();
+        eventService.generateAssignments(eventId,currentUser );
         return ResponseEntity.ok(new GenericResponse("Assignment generated successfully"));
     }
 
