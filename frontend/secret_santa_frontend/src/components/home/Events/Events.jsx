@@ -104,7 +104,7 @@ export default function Events() {
 
     const handleGeneratePairs = async (eventId) => {
         try {
-            const res = await fetch(`/api/v1/events/${eventId}/generate`, {
+            const res = await fetch(`/api/v1/events/${eventId}/generate-assignmentsg`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
             });

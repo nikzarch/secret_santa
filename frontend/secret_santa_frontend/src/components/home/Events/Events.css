@@ -27,6 +27,7 @@
     color: var(--color-text);
     transition: background-color 0.3s, border-color 0.3s;
     width: 10%;
+
 }
 .events-header button:hover {
     background-color: var(--color-accent-light);
@@ -87,6 +88,7 @@
     background-color: var(--color-accent);
     color: var(--color-text);
     transition: background-color 0.2s, border-color 0.2s;
+    height: 30%;
 }
 
 .event-footer button:hover {
