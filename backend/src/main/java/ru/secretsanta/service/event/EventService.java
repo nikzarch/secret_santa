@@ -3,7 +3,6 @@ package ru.secretsanta.service.event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.secretsanta.dto.request.CreateEventRequest;
-import ru.secretsanta.dto.request.AddParticipantToEventRequest;
 import ru.secretsanta.dto.request.DisactiveEventRequest;
 import ru.secretsanta.dto.response.EventResponse;
 import ru.secretsanta.dto.response.EventWithParticipantsResponse;
@@ -25,7 +24,7 @@ public interface EventService {
 
     Page<UserShortResponse> getParticipants(Long eventId, Pageable pageable);
 
-    void generateAssignments(Long eventId);
+    void generateAssignments(Long eventId, User user);
 
     UserShortResponse getReceiverForUser(Long eventId, String username);
 

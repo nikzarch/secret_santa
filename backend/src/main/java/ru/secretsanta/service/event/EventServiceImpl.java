@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.secretsanta.dto.request.CreateEventRequest;
-import ru.secretsanta.dto.request.AddParticipantToEventRequest;
 import ru.secretsanta.dto.request.DisactiveEventRequest;
 import ru.secretsanta.dto.response.EventResponse;
 import ru.secretsanta.dto.response.EventWithParticipantsResponse;
@@ -93,10 +92,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void generateAssignments(Long eventId) {
+    public void generateAssignments(Long eventId, User user) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-
+        if (!event.getGroup().getOwner().getId().equals(user.getId())){
+            throw new InsufficientPrivilegesException("not your group to generate assignments");
+        }
         List<User> participants = new ArrayList<>(event.getGroup().getUsers().stream().toList());
         if (participants.size() < 2) {
             throw new RuntimeException("Not enough participants");

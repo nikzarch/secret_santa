@@ -9,11 +9,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.dto.request.CreateEventRequest;
-import ru.secretsanta.dto.request.AddParticipantToEventRequest;
 import ru.secretsanta.dto.request.DisactiveEventRequest;
 import ru.secretsanta.dto.response.AssignmentResponse;
 import ru.secretsanta.dto.response.EventResponse;
@@ -65,10 +62,9 @@ public class EventController {
         return ResponseEntity.ok(eventService.getEventUserParticipateIn(currentUser,eventId));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{eventId}/generate-assignments")
     public ResponseEntity<GenericResponse> generateAssignments(@PathVariable Long eventId) {
-        eventService.generateAssignments(eventId);
+        eventService.generateAssignments(eventId, );
         return ResponseEntity.ok(new GenericResponse("Assignment generated successfully"));
     }
 
