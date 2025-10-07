@@ -24,7 +24,7 @@ export default function Events() {
         setLoading(true);
         try {
             const params = new URLSearchParams({ page: 0, size: 50 });
-            const res = await fetch(`http://localhost:8080/api/v1/events?${params.toString()}`, {
+            const res = await fetch(`/api/v1/events?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Ошибка загрузки событий");
@@ -41,7 +41,7 @@ export default function Events() {
     const fetchGroups = async () => {
         try {
             const params = new URLSearchParams({ page: 0, size: 50 });
-            const res = await fetch(`http://localhost:8080/api/v1/groups?${params.toString()}`, {
+            const res = await fetch(`/api/v1/groups?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Ошибка загрузки групп");
@@ -59,7 +59,7 @@ export default function Events() {
 
     const handleOpenEvent = async (event) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/v1/events/${event.id}`, {
+            const res = await fetch(`/api/v1/events/${event.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Ошибка загрузки события");
@@ -78,7 +78,7 @@ export default function Events() {
             return;
         }
         try {
-            const res = await fetch("http://localhost:8080/api/v1/events", {
+            const res = await fetch("/api/v1/events", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({
@@ -104,7 +104,7 @@ export default function Events() {
 
     const handleGeneratePairs = async (eventId) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/v1/events/${eventId}/generate`, {
+            const res = await fetch(`/api/v1/events/${eventId}/generate`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -118,7 +118,7 @@ export default function Events() {
 
     const handleMyPair = async (eventId) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/v1/events/${eventId}/my-pair`, {
+            const res = await fetch(`/api/v1/events/${eventId}/my-pair`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Её еще нёт");

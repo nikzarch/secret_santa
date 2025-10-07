@@ -15,7 +15,7 @@ export default function Wishlist() {
         setLoading(true);
         try {
             const params = new URLSearchParams({ page: 0, size: 50 });
-            const res = await fetch(`http://localhost:8080/api/v1/wishlist?${params.toString()}`, {
+            const res = await fetch(`/api/v1/wishlist?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Ошибка загрузки вишлиста");
@@ -40,7 +40,7 @@ export default function Wishlist() {
     const handleAdd = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://localhost:8080/api/v1/wishlist", {
+            const res = await fetch("/api/v1/wishlist", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify(newItem),
@@ -60,7 +60,7 @@ export default function Wishlist() {
 
     const handleDelete = async (id) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/v1/wishlist/${id}`, {
+            const res = await fetch(`/api/v1/wishlist/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -74,7 +74,7 @@ export default function Wishlist() {
 
     const handleUpdate = async (id, updatedItem) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/v1/wishlist/${id}`, {
+            const res = await fetch(`/api/v1/wishlist/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify(updatedItem),

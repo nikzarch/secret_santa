@@ -15,7 +15,7 @@ export default function Main() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await fetch("http://localhost:8080/api/v1/stats", {
+                const res = await fetch("/api/v1/stats", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

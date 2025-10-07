@@ -6,7 +6,7 @@ export default function Me() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/v1/me", {
+        fetch("/api/v1/me", {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },

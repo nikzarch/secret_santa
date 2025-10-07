@@ -27,7 +27,7 @@ export default function RegisterViaToken() {
             formData.append("token", token);
             formData.append("password", password);
 
-            const res = await fetch(`http://localhost:8080/api/v1/auth/register`, {
+            const res = await fetch(`/api/v1/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: formData.toString(),

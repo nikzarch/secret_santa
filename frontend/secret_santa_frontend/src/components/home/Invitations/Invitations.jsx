@@ -15,7 +15,7 @@ export default function Invitations() {
 
     const fetchInvites = async () => {
         try {
-            const res = await fetch("http://localhost:8080/api/v1/groups/invites", {
+            const res = await fetch("/api/v1/groups/invites", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!res.ok) throw new Error("Ошибка загрузки приглашений");
@@ -31,7 +31,7 @@ export default function Invitations() {
 
     const accept = async (id) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/v1/groups/invites/${id}/accept`, {
+            const res = await fetch(`/api/v1/groups/invites/${id}/accept`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -46,7 +46,7 @@ export default function Invitations() {
 
     const decline = async (id) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/v1/groups/invites/${id}/decline`, {
+            const res = await fetch(`/api/v1/groups/invites/${id}/decline`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` }
             });
