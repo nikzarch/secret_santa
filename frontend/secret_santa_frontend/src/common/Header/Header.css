@@ -1,0 +1,30 @@
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+    box-shadow: 0 2px 6px rgba(255, 0, 72, 0.2);
+}
+
+.name-placeholder {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--color-accent-light);
+    cursor: pointer;
+}
+
+.username-placeholder {
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--color-accent);
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.username-placeholder:hover {
+    color: var(--color-accent-light);
+    transform: translateY(-1px);
+}

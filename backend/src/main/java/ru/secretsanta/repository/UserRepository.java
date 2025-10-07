@@ -2,7 +2,7 @@ package ru.secretsanta.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.secretsanta.entity.User;
+import ru.secretsanta.entity.user.User;
 
 import java.util.Optional;
 

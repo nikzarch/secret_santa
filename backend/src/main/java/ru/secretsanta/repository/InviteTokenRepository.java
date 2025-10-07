@@ -1,7 +1,7 @@
 package ru.secretsanta.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.secretsanta.entity.InviteToken;
+import ru.secretsanta.entity.user.InviteToken;
 
 import java.util.Optional;
 

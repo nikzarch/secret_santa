@@ -6,8 +6,9 @@ import org.springframework.http.ResponseEntity;
 import ru.secretsanta.dto.response.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.secretsanta.exception.TooMuchWishlistItemsForUserException;
-import ru.secretsanta.exception.UserNotFoundException;
+import ru.secretsanta.exception.common.NotFoundException;
+import ru.secretsanta.exception.common.TooMuchItemsException;
+import ru.secretsanta.exception.user.InviteStatusException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -22,21 +23,22 @@ public class GlobalExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
         body.put("error", exc.getMessage());
         body.put("status", HttpStatus.BAD_REQUEST.value());
+        exc.printStackTrace();
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException exc) {
-        return new ResponseEntity<>(Map.of("error", "Unable to authorize, wrong password or username"), HttpStatus.NOT_FOUND);
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleNotFoundException(NotFoundException exc) {
+        return new ResponseEntity<>(Map.of("error", "Requested item not found"), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<Map<String, String>> handleExpiredJwtException(ExpiredJwtException exc) {
-        return new ResponseEntity<>(Map.of("error", "token is expired"), HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(TooMuchItemsException.class)
+    public ResponseEntity<ErrorResponse> handleTooMuchWishlistItemsForUserException(TooMuchItemsException exc){
+        return new ResponseEntity<>(new ErrorResponse(exc.getMessage()),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(TooMuchWishlistItemsForUserException.class)
-    public ResponseEntity<ErrorResponse> handleTooMuchWishlistItemsForUserException(TooMuchWishlistItemsForUserException exc){
+    @ExceptionHandler(InviteStatusException.class)
+    public ResponseEntity<ErrorResponse> handleInviteStatusException(InviteStatusException exc){
         return new ResponseEntity<>(new ErrorResponse(exc.getMessage()),HttpStatus.BAD_REQUEST);
     }
 }
