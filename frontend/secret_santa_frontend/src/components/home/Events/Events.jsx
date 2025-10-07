@@ -118,12 +118,12 @@ export default function Events() {
 
     const handleMyPair = async (eventId) => {
         try {
-            const res = await fetch(`/api/v1/events/${eventId}/my-pair`, {
+            const res = await fetch(`/api/v1/events/${eventId}/my-receiver`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Её еще нёт");
             const data = await res.json();
-            showToast(`Ваша пара: ${data.name}`, "success");
+            showToast(`Ваша пара: ${data.receiver}`, "success");
         } catch (err) {
             showToast(err.message);
         }
