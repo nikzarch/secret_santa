@@ -19,8 +19,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Page<Event> findAll(Pageable pageable);
 
-
-    @Query("SELECT e FROM Event e JOIN e.group.users u WHERE u = :user")
-    Page<Event> findAllByGroupParticipant(@Param("user") User user, Pageable pageable);
-
+    Page<Event> findByParticipantsContaining(User user, Pageable pageable);
 }

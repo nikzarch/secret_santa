@@ -37,6 +37,10 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @ManyToMany(mappedBy = "participants")
+    @Builder.Default
+    private List<Event> events = new ArrayList<>();
+
     @ManyToMany(mappedBy = "users")
     @Builder.Default
     private Set<Group> groups = new HashSet<>();

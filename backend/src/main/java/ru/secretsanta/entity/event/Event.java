@@ -34,8 +34,15 @@ public class Event {
 
     private boolean assignmentsGenerated;
 
-    @ManyToOne
-    private Group group;
+    @ManyToMany
+    @JoinTable(
+            name = "event_users",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @Builder.Default
+    private List<User> participants = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

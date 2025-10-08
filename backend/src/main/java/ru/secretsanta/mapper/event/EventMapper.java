@@ -25,11 +25,10 @@ public class EventMapper {
                 event.getId(),
                 event.getName(),
                 event.getDescription(),
-                event.getGroup().getOwner().getName(),
                 event.getEventDate(),
                 event.isActive(),
                 event.isAssignmentsGenerated(),
-                event.getGroup().getUsers().stream()
+                event.getParticipants().stream()
                         .map(UserMapper::toUserShortResponse)
                         .collect(Collectors.toList())
         );

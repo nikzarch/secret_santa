@@ -6,11 +6,11 @@ import ru.secretsanta.dto.response.WishlistItemResponse;
 import ru.secretsanta.entity.wishlist.WishlistItem;
 
 public interface WishlistService {
-    WishlistItemResponse addItem(String username, WishlistItem item);
+    WishlistItemResponse addItem(Long userId, WishlistItem item);
 
-    WishlistItemResponse updateItem(String username, Long itemId, WishlistItem updatedItem);
+    WishlistItemResponse updateItem(Long userId, Long itemId, WishlistItem updatedItem);
 
-    void deleteItem(Long itemId);
+    void deleteItem(Long userId, Long itemId);
 
-    Page<WishlistItemResponse> getWishlist(String username, Pageable pageable);
+    Page<WishlistItemResponse> getWishlist(Long userId, Pageable pageable);
 }

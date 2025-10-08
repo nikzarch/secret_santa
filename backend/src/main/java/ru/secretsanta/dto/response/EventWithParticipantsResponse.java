@@ -9,8 +9,6 @@ public record EventWithParticipantsResponse(
         Long id,
         String name,
         String description,
-        @JsonProperty("owner")
-        String ownerName,
         @JsonProperty("event_date")
         LocalDate eventDate,
         @JsonProperty("is_active")

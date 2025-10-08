@@ -48,7 +48,7 @@ public class EventServiceImpl implements EventService {
                 .eventDate(request.date() != null ? request.date() : LocalDate.now())
                 .isActive(true)
                 .assignmentsGenerated(false)
-                .group(group)
+                .participants(group.getUsers().stream().toList())
                 .build();
         eventRepository.save(event);
     }
@@ -73,20 +73,20 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventWithParticipantsResponse> getEventsByUser(User user, Pageable pageable) {
-        return PageMapper.listToPage(eventRepository.findAllByGroupParticipant(user,Pageable.unpaged()).stream().filter(event -> event.isActive()).map(EventMapper::toEventWithParticipantsResponse).toList(),pageable);
+        return PageMapper.listToPage(eventRepository.findByParticipantsContaining(user,Pageable.unpaged()).stream().filter(event -> event.isActive()).map(EventMapper::toEventWithParticipantsResponse).toList(),pageable);
     }
 
     @Override
     public Page<UserShortResponse> getParticipants(Long eventId, Pageable pageable) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        return PageMapper.listToPage(event.getGroup().getUsers().stream().map(UserMapper::toUserShortResponse).toList(),pageable);
+        return PageMapper.listToPage(event.getParticipants().stream().map(UserMapper::toUserShortResponse).toList(),pageable);
     }
 
     @Override
     public EventWithParticipantsResponse getEventUserParticipateIn(User user, Long id){
         Event event = eventRepository.findById(id)
-                .filter(ev -> ev.getGroup().getOwner().equals(user) || ev.getGroup().getUsers().contains(user))
+                .filter(ev -> ev.getParticipants().contains(user) )
                 .orElseThrow(() -> new NotFoundException("event not found"));
         return EventMapper.toEventWithParticipantsResponse(event);
     }
@@ -95,10 +95,10 @@ public class EventServiceImpl implements EventService {
     public void generateAssignments(Long eventId, User user) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        if (!event.getGroup().getOwner().getId().equals(user.getId())){
-            throw new InsufficientPrivilegesException("not your group to generate assignments");
+        if (!event.getParticipants().contains(user)){
+            throw new InsufficientPrivilegesException("not your event to generate assignments");
         }
-        List<User> participants = new ArrayList<>(event.getGroup().getUsers().stream().toList());
+        List<User> participants = new ArrayList<>(event.getParticipants().stream().toList());
         if (participants.size() < 2) {
             throw new RuntimeException("Not enough participants");
         }
