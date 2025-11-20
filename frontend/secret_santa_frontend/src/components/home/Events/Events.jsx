@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./Events.css";
+import {useNavigate} from "react-router-dom";
 
 export default function Events() {
     const token = localStorage.getItem("token");
     const username = localStorage.getItem("name");
 
+    const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -24,7 +26,7 @@ export default function Events() {
         setLoading(true);
         try {
             const params = new URLSearchParams({ page: 0, size: 50 });
-            const res = await fetch(`/api/v1/events?${params.toString()}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Ошибка загрузки событий");
@@ -38,10 +40,11 @@ export default function Events() {
         }
     };
 
+
     const fetchGroups = async () => {
         try {
             const params = new URLSearchParams({ page: 0, size: 50 });
-            const res = await fetch(`/api/v1/groups?${params.toString()}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/groups?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Ошибка загрузки групп");
@@ -59,7 +62,7 @@ export default function Events() {
 
     const handleOpenEvent = async (event) => {
         try {
-            const res = await fetch(`/api/v1/events/${event.id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${event.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Ошибка загрузки события");
@@ -78,7 +81,7 @@ export default function Events() {
             return;
         }
         try {
-            const res = await fetch("/api/v1/events", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({
@@ -104,7 +107,7 @@ export default function Events() {
 
     const handleGeneratePairs = async (eventId) => {
         try {
-            const res = await fetch(`/api/v1/events/${eventId}/generate-assignments`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${eventId}/generate-assignments`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -118,7 +121,7 @@ export default function Events() {
 
     const handleMyPair = async (eventId) => {
         try {
-            const res = await fetch(`/api/v1/events/${eventId}/my-receiver`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${eventId}/my-receiver`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Её еще нёт");
@@ -127,6 +130,20 @@ export default function Events() {
         } catch (err) {
             showToast(err.message);
         }
+    };
+    const handleViewWishlist = async (eventId) => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${eventId}/my-receiver`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error("Её еще нёт");
+            const data = await res.json();
+
+            navigate(`/wishlist/${data.receiver_id}`, { state: { user: data.receiver, id: data.receiver_id } });
+        } catch (err) {
+            showToast(err.message);
+        }
+
     };
 
     if (loading) return <div>Загрузка...</div>;
@@ -153,14 +170,17 @@ export default function Events() {
                                 Подробнее
                             </button>
 
-                            {e.owner === username && (
-                                <button className="btn-generate" onClick={() => handleGeneratePairs(e.id)}>
-                                    Сгенерировать пары
-                                </button>
-                            )}
+                            <button className="btn-generate" onClick={() => handleGeneratePairs(e.id)}>
+                                Сгенерировать пары
+                            </button>
+
 
                             <button className="btn-my-pair" onClick={() => handleMyPair(e.id)}>
                                 Узнать мою пару
+                            </button>
+
+                            <button className="btn-wishlist" onClick={() => handleViewWishlist(e.id)}>
+                                Посмотреть вишлист пары
                             </button>
                         </div>
                     </div>

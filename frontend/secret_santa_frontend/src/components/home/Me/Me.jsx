@@ -6,7 +6,7 @@ export default function Me() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("/api/v1/me", {
+        fetch(`${import.meta.env.VITE_API_URL}/api/v1/me`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },

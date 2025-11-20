@@ -20,7 +20,7 @@ export default function Groups() {
 
     const fetchGroups = async () => {
         try {
-            const res = await fetch("/api/v1/groups", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/groups`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) {
@@ -42,7 +42,7 @@ export default function Groups() {
     const handleCreateGroup = async () => {
         if (!newGroupName.trim()) return;
         try {
-            const res = await fetch("/api/v1/groups", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/groups`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export default function Groups() {
     const handleDeleteGroup = async (name) => {
         if (!window.confirm(`Удалить группу "${name}"?`)) return;
         try {
-            const res = await fetch(`/api/v1/groups/${name}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/groups/${name}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -86,7 +86,7 @@ export default function Groups() {
             return;
         }
         try {
-            const res = await fetch(`/api/v1/groups/${group.id}/participants`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/groups/${group.id}/participants`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) {
@@ -105,7 +105,7 @@ export default function Groups() {
     const handleAddUser = async () => {
         if (!usernameInput.trim()) return;
         try {
-            const res = await fetch("/api/v1/groups/invite", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/groups/invite`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export default function Groups() {
     const handleKickUser = async (username) => {
         if (!window.confirm(`Исключить пользователя "${username}"?`)) return;
         try {
-            const res = await fetch("/api/v1/groups/kick-user", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/groups/kick-user`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -149,7 +149,7 @@ export default function Groups() {
 
     const handleTransferOwner = async (username) => {
         try {
-            const res = await fetch("/api/v1/groups/transfer-owner", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/groups/transfer-owner`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -187,8 +187,8 @@ export default function Groups() {
                     <li key={group.id}>
                         <span>{group.name}</span>
                         <div>
-                            <button onClick={() => fetchGroupUsers(group)}>Участники</button>
                             {group.owner.name === username && <button onClick={() => handleDeleteGroup(group.name)}>Удалить</button>}
+                            <button onClick={() => fetchGroupUsers(group)}>Участники</button>
                         </div>
                     </li>
                 ))}
@@ -207,6 +207,7 @@ export default function Groups() {
                             </li>
                         ))}
                     </ul>
+                    {selectedGroup.owner.name === username &&
                     <div className="modal-add-user">
                         <input
                             type="text"
@@ -216,6 +217,7 @@ export default function Groups() {
                         />
                         <button onClick={handleAddUser}>Добавить</button>
                     </div>
+                    }
                     <button className="modal-close" onClick={() => setModalType(null)}>Закрыть</button>
                 </div>
             )}

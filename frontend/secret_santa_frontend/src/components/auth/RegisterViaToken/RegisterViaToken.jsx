@@ -26,8 +26,7 @@ export default function RegisterViaToken() {
             const formData = new URLSearchParams();
             formData.append("token", token);
             formData.append("password", password);
-
-            const res = await fetch(`/api/v1/auth/register`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: formData.toString(),

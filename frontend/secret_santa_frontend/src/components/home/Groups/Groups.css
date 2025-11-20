@@ -33,7 +33,7 @@
     color: white;
     border: none;
     border-radius: 6px;
-    padding: 8px 12px;
+    padding: 12px 12px;
     cursor: pointer;
     width: 20%;
 }
@@ -58,10 +58,11 @@
 }
 
 .groups-list li button {
+    width: 9rem;
     background-color: var(--color-accent);
-    padding: 4px 8px;
+    padding: 7px 8px;
+    margin: 5px;
     font-size: 0.9rem;
-    margin-left: 5px;
 }
 
 .groups-list li button:hover {
@@ -69,3 +70,18 @@
 }
 
 
+.groups-list li button {
+    width: 9rem;
+    background-color: var(--color-accent);
+    padding: 7px 8px;
+    margin: 5px;
+    font-size: 0.9rem;
+}
+
+.modal li button {
+    width: 12rem;
+    background-color: var(--color-accent);
+    padding: 7px 8px;
+    margin: 5px;
+    font-size: 0.9rem;
+}

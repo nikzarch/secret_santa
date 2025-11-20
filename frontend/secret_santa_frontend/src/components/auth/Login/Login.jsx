@@ -13,7 +13,7 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            const response = await fetch('/api/v1/auth/login', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, password }),
@@ -29,7 +29,7 @@ export default function Login() {
                 const errorData = await response.json();
                 setMessage({ text: errorData.message || 'Ошибка входа', type: 'error' });
             }
-        } catch (err) {
+        } catch  {
             setMessage({ text: 'Ошибка входа', type: 'error' });
         }
     };

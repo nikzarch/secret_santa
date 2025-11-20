@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
+import {useLocation} from "react-router-dom";
 import "./Wishlist.css";
 
 export default function Wishlist() {
+    const location = useLocation();
+    const user = {name: location.state?.user, id: location.state?.id};
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
 
-    const [newItem, setNewItem] = useState({ name: "", description: "", link: "", priority: 1 });
+    const [newItem, setNewItem] = useState({name: "", description: "", link: "", priority: 1});
     const [editingItem, setEditingItem] = useState(null);
 
     const token = localStorage.getItem("token");
+    const currentUserName = localStorage.getItem("name");
 
     const fetchWishlist = async () => {
         setLoading(true);
+        console.log(user);
         try {
-            const params = new URLSearchParams({ page: 0, size: 50 });
-            const res = await fetch(`/api/v1/wishlist?${params.toString()}`, {
-                headers: { Authorization: `Bearer ${token}` },
+            const params = new URLSearchParams({page: 0, size: 50});
+
+            const url = user.id
+                ? `${import.meta.env.VITE_API_URL}/api/v1/wishlist/user/${user.id}?${params.toString()}`
+                : `${import.meta.env.VITE_API_URL}/api/v1/wishlist?${params.toString()}`;
+
+            const res = await fetch(url, {
+                headers: {Authorization: `Bearer ${token}`},
             });
             if (!res.ok) throw new Error("Ошибка загрузки вишлиста");
             const data = await res.json();
@@ -33,16 +43,16 @@ export default function Wishlist() {
     }, []);
 
     const showToast = (text, type = "error") => {
-        setToast({ text, type });
+        setToast({text, type});
         setTimeout(() => setToast(null), 3000);
     };
 
     const handleAdd = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("/api/v1/wishlist", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/wishlist`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                headers: {"Content-Type": "application/json", Authorization: `Bearer ${token}`},
                 body: JSON.stringify(newItem),
             });
             const data = await res.json();
@@ -51,7 +61,7 @@ export default function Wishlist() {
                 return;
             }
             showToast("Элемент добавлен", "success");
-            setNewItem({ name: "", description: "", link: "", priority: 1 });
+            setNewItem({name: "", description: "", link: "", priority: 1});
             await fetchWishlist();
         } catch (err) {
             showToast(err.message, "error");
@@ -60,9 +70,9 @@ export default function Wishlist() {
 
     const handleDelete = async (id) => {
         try {
-            const res = await fetch(`/api/v1/wishlist/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/wishlist/${id}`, {
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {Authorization: `Bearer ${token}`},
             });
             if (!res.ok) throw new Error("Ошибка удаления");
             showToast("Элемент удалён", "success");
@@ -74,9 +84,9 @@ export default function Wishlist() {
 
     const handleUpdate = async (id, updatedItem) => {
         try {
-            const res = await fetch(`/api/v1/wishlist/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/wishlist/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                headers: {"Content-Type": "application/json", Authorization: `Bearer ${token}`},
                 body: JSON.stringify(updatedItem),
             });
             if (!res.ok) throw new Error("Ошибка обновления");
@@ -90,44 +100,47 @@ export default function Wishlist() {
 
     if (loading) return <div>Загрузка...</div>;
 
+    const isOwner = !user || user.name === currentUserName;
+
     return (
         <div className="wishlist-page">
-            <h2>Вишлист</h2>
-            <p>пиши сюда, что хочешь получить в подарок, эта инфа будет доступна тому, кто тебе дарит</p>
+            <h2>Вишлист {user ? user.name : currentUserName}</h2>
+            {isOwner && <p>пиши сюда, что хочешь получить в подарок, эта инфа будет доступна тому, кто тебе дарит</p>}
 
-            <form className="wishlist-form" onSubmit={handleAdd}>
-                <div className="wishlist-fields">
-                    <input
-                        type="text"
-                        placeholder="Название"
-                        value={newItem.name}
-                        onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Описание"
-                        value={newItem.description}
-                        onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Ссылка"
-                        value={newItem.link}
-                        onChange={(e) => setNewItem({ ...newItem, link: e.target.value })}
-                    />
-                    <label>Приоритет:</label>
-                    <input
-                        type="number"
-                        min={1}
-                        value={newItem.priority}
-                        onChange={(e) => setNewItem({ ...newItem, priority: parseInt(e.target.value) })}
-                        required
-                    />
-                </div>
-                <button type="submit">Добавить</button>
-            </form>
-
+            {isOwner && (
+                <form className="wishlist-form" onSubmit={handleAdd}>
+                    <div className="wishlist-fields">
+                        <input
+                            type="text"
+                            placeholder="Название"
+                            value={newItem.name}
+                            onChange={(e) => setNewItem({...newItem, name: e.target.value})}
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="Описание"
+                            value={newItem.description}
+                            onChange={(e) => setNewItem({...newItem, description: e.target.value})}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Ссылка"
+                            value={newItem.link}
+                            onChange={(e) => setNewItem({...newItem, link: e.target.value})}
+                        />
+                        <label>Приоритет:</label>
+                        <input
+                            type="number"
+                            min={1}
+                            value={newItem.priority}
+                            onChange={(e) => setNewItem({...newItem, priority: parseInt(e.target.value)})}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Добавить</button>
+                </form>
+            )}
 
             <div className="wishlist-list">
                 {items.map((item) => (
@@ -154,13 +167,14 @@ export default function Wishlist() {
                                             Ссылка ({item.link})
                                         </a>
                                     </p>
-                                )}
+                                )}p
 
                                 <p>Приоритет: {item.priority}</p>
-                                <div className="wishlist-actions">
-                                    <button onClick={() => setEditingItem(item.id)}>Редактировать</button>
-                                    <button onClick={() => handleDelete(item.id)}>Удалить</button>
-                                </div>
+                                {isOwner &&
+                                    <div className="wishlist-actions">
+                                        <button onClick={() => setEditingItem(item.id)}>Редактировать</button>
+                                        <button onClick={() => handleDelete(item.id)}>Удалить</button>
+                                    </div>}
                             </>
                         )}
                     </div>
@@ -172,7 +186,7 @@ export default function Wishlist() {
     );
 }
 
-function EditForm({ item, onCancel, onSave }) {
+function EditForm({item, onCancel, onSave}) {
     const [formData, setFormData] = useState({
         name: item.name,
         description: item.description,
@@ -193,7 +207,7 @@ function EditForm({ item, onCancel, onSave }) {
                 <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
                     required
                 />
             </div>
@@ -202,7 +216,7 @@ function EditForm({ item, onCancel, onSave }) {
                 <input
                     type="text"
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
                 />
             </div>
             <div className="form-field">
@@ -210,7 +224,7 @@ function EditForm({ item, onCancel, onSave }) {
                 <input
                     type="text"
                     value={formData.link}
-                    onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                    onChange={(e) => setFormData({...formData, link: e.target.value})}
                 />
             </div>
             <div className="form-field">
@@ -220,7 +234,7 @@ function EditForm({ item, onCancel, onSave }) {
                     min={1}
                     max={10}
                     value={formData.priority}
-                    onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
+                    onChange={(e) => setFormData({...formData, priority: parseInt(e.target.value)})}
                     required
                 />
             </div>

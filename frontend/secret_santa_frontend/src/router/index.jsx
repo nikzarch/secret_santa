@@ -43,6 +43,14 @@ export default function AppRouter() {
                     </ProtectedRoute>
                 }
             />
+            <Route
+                path="/wishlist/:userId"
+                element={
+                    <ProtectedRoute>
+                        <Wishlist />
+                    </ProtectedRoute>
+                }
+            />
 
             <Route
                 path="/groups"
@@ -69,6 +77,7 @@ export default function AppRouter() {
                     </ProtectedRoute>
                 }
             />
+
 
         </Routes>
     );
