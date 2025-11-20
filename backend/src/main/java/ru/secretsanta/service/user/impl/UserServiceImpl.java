@@ -1,4 +1,4 @@
-package ru.secretsanta.service.user;
+package ru.secretsanta.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -10,6 +10,7 @@ import ru.secretsanta.entity.user.User;
 import ru.secretsanta.exception.common.NotFoundException;
 import ru.secretsanta.mapper.user.UserMapper;
 import ru.secretsanta.repository.UserRepository;
+import ru.secretsanta.service.user.UserService;
 
 
 @Service

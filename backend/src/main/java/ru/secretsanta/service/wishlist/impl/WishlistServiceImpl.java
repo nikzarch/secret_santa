@@ -1,4 +1,4 @@
-package ru.secretsanta.service.wishlist;
+package ru.secretsanta.service.wishlist.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +13,7 @@ import ru.secretsanta.exception.user.InsufficientPrivilegesException;
 import ru.secretsanta.mapper.wishlist.WishlistMapper;
 import ru.secretsanta.repository.UserRepository;
 import ru.secretsanta.repository.WishlistRepository;
+import ru.secretsanta.service.wishlist.WishlistService;
 
 import java.util.List;
 

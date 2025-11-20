@@ -1,4 +1,4 @@
-package ru.secretsanta.service.user;
+package ru.secretsanta.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,7 @@ import ru.secretsanta.dto.response.InviteResponse;
 import ru.secretsanta.entity.user.InviteToken;
 import ru.secretsanta.mapper.user.InviteMapper;
 import ru.secretsanta.repository.InviteTokenRepository;
+import ru.secretsanta.service.user.InviteService;
 import ru.secretsanta.util.JWTUtil;
 
 import java.time.LocalDateTime;

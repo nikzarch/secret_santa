@@ -1,4 +1,4 @@
-package ru.secretsanta.config;
+package ru.secretsanta.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 

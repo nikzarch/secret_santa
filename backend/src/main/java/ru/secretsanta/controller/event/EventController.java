@@ -12,10 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.dto.request.CreateEventRequest;
 import ru.secretsanta.dto.request.DisactiveEventRequest;
-import ru.secretsanta.dto.response.AssignmentResponse;
-import ru.secretsanta.dto.response.EventResponse;
-import ru.secretsanta.dto.response.EventWithParticipantsResponse;
-import ru.secretsanta.dto.response.GenericResponse;
+import ru.secretsanta.dto.response.*;
 import ru.secretsanta.entity.user.User;
 import ru.secretsanta.service.event.EventService;
 import ru.secretsanta.service.user.UserService;
@@ -73,8 +70,9 @@ public class EventController {
     public ResponseEntity<AssignmentResponse> getMyReceiver(Authentication authentication,
                                                             @PathVariable Long eventId) {
         String username = authentication.getName();
+        UserShortResponse receiver = eventService.getReceiverForUser(eventId, username);
         return ResponseEntity.ok(
-                new AssignmentResponse(eventService.getReceiverForUser(eventId, username).name())
+                new AssignmentResponse(receiver.id(),receiver.name())
         );
     }
 }

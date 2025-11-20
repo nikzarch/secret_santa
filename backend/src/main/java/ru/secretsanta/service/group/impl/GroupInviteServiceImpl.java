@@ -1,4 +1,4 @@
-package ru.secretsanta.service.group;
+package ru.secretsanta.service.group.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import ru.secretsanta.mapper.group.GroupInviteMapper;
 import ru.secretsanta.repository.GroupInviteRepository;
 import ru.secretsanta.repository.GroupRepository;
 import ru.secretsanta.repository.UserRepository;
+import ru.secretsanta.service.group.GroupInviteService;
 
 import java.time.Instant;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ru.secretsanta.service.group;
+package ru.secretsanta.service.group.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +17,7 @@ import ru.secretsanta.mapper.common.PageMapper;
 import ru.secretsanta.mapper.user.UserMapper;
 import ru.secretsanta.repository.GroupRepository;
 import ru.secretsanta.repository.UserRepository;
+import ru.secretsanta.service.group.GroupService;
 
 import java.util.List;
 

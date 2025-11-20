@@ -1,4 +1,4 @@
-package ru.secretsanta.service.user;
+package ru.secretsanta.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

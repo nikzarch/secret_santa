@@ -1,4 +1,4 @@
-package ru.secretsanta.service.event;
+package ru.secretsanta.service.event.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +22,7 @@ import ru.secretsanta.mapper.user.UserMapper;
 import ru.secretsanta.repository.EventRepository;
 import ru.secretsanta.repository.GroupRepository;
 import ru.secretsanta.repository.UserRepository;
+import ru.secretsanta.service.event.EventService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

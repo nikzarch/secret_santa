@@ -1,4 +1,4 @@
-package ru.secretsanta.service.stats;
+package ru.secretsanta.service.stats.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
@@ -8,11 +8,12 @@ import ru.secretsanta.dto.response.GroupResponse;
 import ru.secretsanta.dto.response.StatsResponse;
 import ru.secretsanta.service.event.EventService;
 import ru.secretsanta.service.group.GroupService;
+import ru.secretsanta.service.stats.StatsService;
 import ru.secretsanta.service.user.UserService;
 
 @Service
 @RequiredArgsConstructor
-public class StatsServiceImpl implements StatsService{
+public class StatsServiceImpl implements StatsService {
     private final UserService userService;
     private final EventService eventService;
     private final GroupService groupService;

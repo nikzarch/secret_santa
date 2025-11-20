@@ -25,10 +25,12 @@ services:
       - 5432
     ports:
       - "5432:5432"
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "secret_santa" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  web:
+    build:
+      context: ../frontend/secret_santa_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - secret_santa
 volumes:
   secret_santa_db-data:

@@ -4,13 +4,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.secretsanta.dto.request.WishlistItemRequest;
+import ru.secretsanta.dto.response.ErrorResponse;
 import ru.secretsanta.dto.response.GenericResponse;
 import ru.secretsanta.dto.response.WishlistItemResponse;
 import ru.secretsanta.entity.user.User;
+import ru.secretsanta.exception.user.InsufficientPrivilegesException;
+import ru.secretsanta.exception.user.InviteStatusException;
 import ru.secretsanta.mapper.wishlist.WishlistMapper;
 import ru.secretsanta.service.user.UserService;
 import ru.secretsanta.service.wishlist.WishlistService;
@@ -55,8 +59,13 @@ public class WishlistController {
         return ResponseEntity.ok(wishlistService.getWishlist(current.getId(),pageable));
     }
 
-    @GetMapping("/user/{username}")
-    public ResponseEntity<Page<WishlistItemResponse>> getWishlistOfUser(@PathVariable Long userId, Pageable pageable){
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Page<WishlistItemResponse>> getWishlistOfUser(@PathVariable(name = "id") Long userId, Pageable pageable){
         return ResponseEntity.ok(wishlistService.getWishlist(userId,pageable));
+    }
+
+    @ExceptionHandler(InsufficientPrivilegesException.class)
+    public ResponseEntity<ErrorResponse> handle(InsufficientPrivilegesException exc){
+        return new ResponseEntity<>(new ErrorResponse(exc.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
