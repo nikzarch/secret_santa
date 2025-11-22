@@ -6,6 +6,7 @@ import RootRedirect from "./RootRedirect";
 import ProtectedRoute from "./ProtectedRoute";
 
 import Me from "../components/home/Me/Me";
+import Chat from "../components/home/Chat/Chat.jsx";
 import Wishlist from "../components/home/Wishlist/Wishlist.jsx";
 import Groups from "../components/home/Groups/Groups.jsx";
 import Invitations from "../components/home/Invitations/Invitations.jsx";
@@ -74,6 +75,15 @@ export default function AppRouter() {
                 element={
                     <ProtectedRoute>
                         <Events />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/chat"
+                element={
+                    <ProtectedRoute>
+                        <Chat />
                     </ProtectedRoute>
                 }
             />
