@@ -5,7 +5,6 @@ import lombok.*;
 import ru.secretsanta.entity.event.Event;
 import ru.secretsanta.entity.event.SantaAssignment;
 import ru.secretsanta.entity.group.Group;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -53,7 +52,7 @@ public class User {
     @Builder.Default
     private List<SantaAssignment> sentAssignments = new ArrayList<>();
 
-    @Builder.Default
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<SantaAssignment> receivedAssignments = new ArrayList<>();
 }

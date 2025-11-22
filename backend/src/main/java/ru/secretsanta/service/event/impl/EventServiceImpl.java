@@ -97,7 +97,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         if (!event.getParticipants().contains(user)){
-            throw new InsufficientPrivilegesException("not your event to generate assignments");
+            throw new InsufficientPrivilegesException("not your event receiver generate assignments");
         }
         List<User> participants = new ArrayList<>(event.getParticipants().stream().toList());
         if (participants.size() < 2) {
@@ -141,16 +141,31 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public UserShortResponse getReceiverForUser(Long eventId, String username) {
+    public UserShortResponse getReceiverForUser(Long eventId, Long userId) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new NotFoundException("Event not found"));
 
-        User user = userRepository.findByName(username)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         return event.getAssignments().stream()
                 .filter(a -> a.getSanta().equals(user))
                 .map(SantaAssignment::getReceiver)
+                .map(UserMapper::toUserShortResponse)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No assignment found"));
+    }
+
+    @Override
+    public UserShortResponse getSantaForUser(Long eventId, Long userId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        return event.getAssignments().stream()
+                .filter(a -> a.getReceiver().equals(user))
+                .map(SantaAssignment::getSanta)
                 .map(UserMapper::toUserShortResponse)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No assignment found"));

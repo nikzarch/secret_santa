@@ -69,8 +69,8 @@ public class EventController {
     @GetMapping("/{eventId}/my-receiver")
     public ResponseEntity<AssignmentResponse> getMyReceiver(Authentication authentication,
                                                             @PathVariable Long eventId) {
-        String username = authentication.getName();
-        UserShortResponse receiver = eventService.getReceiverForUser(eventId, username);
+        User currentUser = userService.getCurrentUser();
+        UserShortResponse receiver = eventService.getReceiverForUser(eventId, currentUser.getId());
         return ResponseEntity.ok(
                 new AssignmentResponse(receiver.id(),receiver.name())
         );

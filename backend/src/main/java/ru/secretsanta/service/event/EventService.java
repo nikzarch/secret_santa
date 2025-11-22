@@ -26,6 +26,7 @@ public interface EventService {
 
     void generateAssignments(Long eventId, User user);
 
-    UserShortResponse getReceiverForUser(Long eventId, String username);
+    UserShortResponse getReceiverForUser(Long eventId, Long userId);
+    UserShortResponse getSantaForUser(Long eventId, Long userId);
 
 }

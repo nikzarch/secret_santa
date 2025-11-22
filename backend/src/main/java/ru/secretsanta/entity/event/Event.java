@@ -2,7 +2,6 @@ package ru.secretsanta.entity.event;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.secretsanta.entity.group.Group;
 import ru.secretsanta.entity.user.User;
 
 import java.time.LocalDate;
