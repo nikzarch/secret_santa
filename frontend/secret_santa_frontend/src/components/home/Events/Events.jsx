@@ -146,6 +146,20 @@ export default function Events() {
 
     };
 
+    const handleOpenChat = async (event) => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${event.id}/my-receiver`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error("Не удалось получить имя получателя");
+            const data = await res.json();
+
+            navigate("/chat", { state: { event: { ...event, receiverName: data.receiver } } });
+        } catch (err) {
+            showToast(err.message);
+        }
+    };
+
     if (loading) return <div>Загрузка...</div>;
 
     return (
@@ -182,6 +196,13 @@ export default function Events() {
                             <button className="btn-wishlist" onClick={() => handleViewWishlist(e.id)}>
                                 Посмотреть вишлист пары
                             </button>
+                            <button
+                                className="btn-chat"
+                                onClick={() => handleOpenChat(e)}
+                            >
+                                Открыть чат
+                            </button>
+
                         </div>
                     </div>
                 ))}
