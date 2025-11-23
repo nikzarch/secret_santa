@@ -14,10 +14,9 @@ export default function Wishlist() {
 
     const token = localStorage.getItem("token");
     const currentUserName = localStorage.getItem("name");
-
+    const isOwner = user.name == undefined||!user || user.name === currentUserName;
     const fetchWishlist = async () => {
         setLoading(true);
-        console.log(user);
         try {
             const params = new URLSearchParams({page: 0, size: 50});
 
@@ -100,7 +99,7 @@ export default function Wishlist() {
 
     if (loading) return <div>Загрузка...</div>;
 
-    const isOwner = !user || user.name === currentUserName;
+
 
     return (
         <div className="wishlist-page">
