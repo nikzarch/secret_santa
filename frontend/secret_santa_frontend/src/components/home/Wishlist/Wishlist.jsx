@@ -166,7 +166,7 @@ export default function Wishlist() {
                                             Ссылка ({item.link})
                                         </a>
                                     </p>
-                                )}p
+                                )}
 
                                 <p>Приоритет: {item.priority}</p>
                                 {isOwner &&
