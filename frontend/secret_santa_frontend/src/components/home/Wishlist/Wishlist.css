@@ -170,3 +170,12 @@
     10%, 90% { opacity: 1; transform: translateY(0); }
     100% { opacity: 0; transform: translateY(-10px); }
 }
+
+@media (max-width: 768px) {
+    .wishlist-form button {
+        width: 100%;
+    }
+    .wishlist-form input {
+        width: 100%;
+    }
+}

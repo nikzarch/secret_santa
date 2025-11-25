@@ -169,3 +169,46 @@ button:focus-visible {
   border-color: var(--color-accent-light);
   color: var(--color-accent-light);
 }
+
+@media (max-width: 768px) {
+
+  .app-body {
+    flex-direction: column;
+  }
+
+  .app-main {
+    padding: 12px;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    height: 100vh;
+    width: 220px;
+    transition: left .25s ease;
+    z-index: 999;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+  }
+
+
+  .app-header {
+    padding: 10px 14px;
+  }
+
+  .app-header .button-placeholder button {
+    padding: 6px 10px;
+  }
+}
+
+

@@ -124,6 +124,40 @@
     margin-top: 5px;
 }
 
+@media (max-width: 768px) {
+
+    .events-page {
+        padding: 10px;
+    }
+
+    .events-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .events-header button {
+        width: 100%;
+    }
+
+    .events-list {
+        flex-direction: column;
+    }
+
+    .event-card {
+        width: 90%;
+    }
+
+    .event-footer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .event-footer button {
+        width: 90%;
+        height: auto;
+    }
+
+}
 
 
 

@@ -1,8 +1,15 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
 export default function Sidebar() {
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        const handler = () => setOpen(true);
+        window.addEventListener("open-sidebar", handler);
+        return () => window.removeEventListener("open-sidebar", handler);
+    }, []);
     const navItems = [
         { path: "/wishlist", label: "Вишлист" },
         { path: "/events", label: "События" },
@@ -16,7 +23,7 @@ export default function Sidebar() {
     ];
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar ${open ? "open" : ""}`} onClick={() => setOpen(false)}>
             <ul className="sidebar-list">
                 {navItems.map((item) => (
                     <li key={item.label}>

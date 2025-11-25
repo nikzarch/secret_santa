@@ -11,8 +11,14 @@ export default function Header() {
         navigate('/login');
     }
 
+    const openSidebar = () => {
+        const evt = new CustomEvent("open-sidebar");
+        window.dispatchEvent(evt);
+    };
+
     return (
         <header className="app-header">
+            <button className="burger" onClick={openSidebar}>☰</button>
             <div className="name-placeholder" onClick={() => navigate('/home')}>Тайный Санта</div>
             <div
                     className="username-placeholder"

@@ -85,3 +85,24 @@
     margin: 5px;
     font-size: 0.9rem;
 }
+
+@media (max-width: 768px) {
+
+    .groups-list li button {
+        width: 90%;
+        background-color: var(--color-accent);
+        padding: 7px 8px;
+        font-size: 90%;
+        justify-content: right;
+    }
+    .groups-list li div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .new-group button {
+        width: 12rem;
+    }
+
+
+}
