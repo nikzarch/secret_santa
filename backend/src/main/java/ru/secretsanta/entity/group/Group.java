@@ -5,7 +5,9 @@ import lombok.*;
 import ru.secretsanta.entity.user.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,5 +36,13 @@ public class Group {
 
     @Builder.Default
     private LocalDate createdAt = LocalDate.now();
+
+    @OneToMany(
+            mappedBy = "group",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<GroupInvite> invites = new ArrayList<>();
 
 }
