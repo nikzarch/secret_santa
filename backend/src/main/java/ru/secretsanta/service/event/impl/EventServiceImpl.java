@@ -95,7 +95,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public void generateAssignments(Long eventId, User user) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new NotFoundException("Event not found"));
+        if (event.isAssignmentsGenerated()){
+            throw new RuntimeException("Already generated");
+        }
         if (!event.getParticipants().contains(user)){
             throw new InsufficientPrivilegesException("not your event receiver generate assignments");
         }

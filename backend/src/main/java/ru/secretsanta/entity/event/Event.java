@@ -46,4 +46,11 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<SantaAssignment> assignments = new ArrayList<>();
+    @PreRemove
+    private void detachParticipants() {
+        for (User user : participants) {
+            user.getEvents().remove(this);
+        }
+        participants.clear();
+    }
 }
