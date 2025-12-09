@@ -48,6 +48,7 @@ public class WishlistServiceImpl implements WishlistService {
         existing.setTitle(updatedItem.getTitle());
         existing.setDescription(updatedItem.getDescription());
         existing.setPriority(updatedItem.getPriority());
+        existing.setLink(updatedItem.getLink());
         return WishlistMapper.toWishlistItemResponse(wishlistRepository.save(existing));
     }
 

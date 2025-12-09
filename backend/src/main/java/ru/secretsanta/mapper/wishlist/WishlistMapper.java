@@ -11,6 +11,8 @@ public class WishlistMapper {
         WishlistItem item = new WishlistItem();
         item.setTitle(dto.name());
         item.setDescription(dto.description());
+        item.setLink(dto.link());
+        item.setPriority(dto.priority());
         return item;
     }
 
