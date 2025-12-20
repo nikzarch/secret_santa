@@ -2,6 +2,7 @@ package ru.secretsanta.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.secretsanta.dto.request.LoginRequest;
 import ru.secretsanta.dto.request.RegisterRequest;
 import ru.secretsanta.dto.response.AuthResponse;
@@ -31,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final JWTUtil jwtUtil;
 
     @Override
+    @Transactional
     public AuthResponse register(RegisterRequest registerRequest) {
         if (userRepository.existsByName(registerRequest.name())) {
             throw new RuntimeException("User already exists");
@@ -64,6 +66,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public RegisterViaTokenResponse registerViaToken(String token, String password) {
         InviteToken invite = inviteService.validateToken(token)
                 .orElseThrow(() -> new TokenExpiredException("token has expired"));

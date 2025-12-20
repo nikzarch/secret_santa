@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.secretsanta.dto.response.WishlistItemResponse;
 import ru.secretsanta.entity.user.User;
 import ru.secretsanta.entity.wishlist.WishlistItem;
@@ -21,6 +22,7 @@ import static ru.secretsanta.util.AppConstants.MAX_ITEMS_FOR_USER;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class WishlistServiceImpl implements WishlistService {
     private final WishlistRepository wishlistRepository;
     private final UserRepository userRepository;

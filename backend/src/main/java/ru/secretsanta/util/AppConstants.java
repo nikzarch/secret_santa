@@ -7,4 +7,5 @@ public final class AppConstants {
     public static final int MAX_GROUPS_FOR_USER = 25;
     public static final int MAX_USERS_PER_GROUP = 100;
     public static final int MAX_ITEMS_FOR_USER = 25;
+    public static final int MAX_EVENTS_PER_USER = 20;
 }

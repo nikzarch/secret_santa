@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.secretsanta.dto.request.CreateEventRequest;
 import ru.secretsanta.dto.request.DisactiveEventRequest;
 import ru.secretsanta.dto.response.EventResponse;
@@ -23,6 +24,7 @@ import ru.secretsanta.repository.EventRepository;
 import ru.secretsanta.repository.GroupRepository;
 import ru.secretsanta.repository.UserRepository;
 import ru.secretsanta.service.event.EventService;
+import ru.secretsanta.util.AppConstants;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,7 +40,11 @@ public class EventServiceImpl implements EventService {
     private final GroupRepository groupRepository;
 
     @Override
+    @Transactional
     public void addEvent(CreateEventRequest request, User creator) {
+        if (creator.getGroupsOwned().size() > AppConstants.MAX_EVENTS_PER_USER){
+            throw new InsufficientPrivilegesException("you can't create that many events");
+        }
         Group group = groupRepository.findById(request.groupId()).orElseThrow(() -> new NotFoundException("group not found"));
         if (group.getOwner().getId() != creator.getId() && creator.getRole() != Role.ADMIN){
             throw new InsufficientPrivilegesException("This group isnt yours and you cant make an event for it");
@@ -56,6 +62,7 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
+    @Transactional
     public void disactiveEvent(DisactiveEventRequest request) {
         Event event = eventRepository.findById(request.eventId())
                 .orElseThrow(() -> new RuntimeException("Event not found"));
@@ -73,6 +80,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<EventWithParticipantsResponse> getEventsByUser(User user, Pageable pageable) {
         return PageMapper.listToPage(eventRepository.findByParticipantsContaining(user,Pageable.unpaged()).stream().filter(event -> event.isActive()).map(EventMapper::toEventWithParticipantsResponse).toList(),pageable);
     }
@@ -85,6 +93,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EventWithParticipantsResponse getEventUserParticipateIn(User user, Long id){
         Event event = eventRepository.findById(id)
                 .filter(ev -> ev.getParticipants().contains(user) )
@@ -93,6 +102,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public void generateAssignments(Long eventId, User user) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));

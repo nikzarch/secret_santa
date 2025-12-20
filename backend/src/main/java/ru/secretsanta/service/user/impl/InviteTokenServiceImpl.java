@@ -2,6 +2,7 @@ package ru.secretsanta.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.secretsanta.dto.response.InviteResponse;
 import ru.secretsanta.entity.user.InviteToken;
 import ru.secretsanta.mapper.user.InviteMapper;
@@ -17,14 +18,16 @@ import java.util.Optional;
 public class InviteTokenServiceImpl implements InviteService {
     private final JWTUtil jwtUtil;
     private final InviteTokenRepository inviteTokenRepository;
+    private final InviteMapper inviteMapper;
 
+    @Transactional
     public InviteResponse createInvite(String username) {
         InviteToken invite = new InviteToken();
         String token = jwtUtil.generateToken(username, "USER");
         invite.setToken(token);
         invite.setUsername(username);
         invite.setExpiresAt(LocalDateTime.now().plusDays(7));
-        return InviteMapper.toInviteResponse(inviteTokenRepository.save(invite));
+        return inviteMapper.toInviteResponse(inviteTokenRepository.save(invite));
     }
 
     public Optional<InviteToken> validateToken(String token) {
@@ -32,6 +35,7 @@ public class InviteTokenServiceImpl implements InviteService {
                 .filter(inv -> inv.getExpiresAt().isAfter(LocalDateTime.now()));
     }
 
+    @Transactional
     public void markUsed(InviteToken invite) {
         invite.setUsed(true);
         inviteTokenRepository.save(invite);

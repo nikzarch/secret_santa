@@ -2,6 +2,7 @@ package ru.secretsanta.service.group.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.secretsanta.dto.request.CreateInviteRequest;
 import ru.secretsanta.dto.response.GroupInviteResponse;
 
@@ -33,6 +34,7 @@ public class GroupInviteServiceImpl implements GroupInviteService {
     private final UserRepository userRepo;
 
     @Override
+    @Transactional
     public GroupInviteResponse createInvite(CreateInviteRequest req, User inviter) {
         Group group = groupRepo.findById(req.groupId()).orElseThrow(() -> new NotFoundException("Group not found"));
         if (!group.getOwner().getId().equals(inviter.getId())) {
@@ -65,6 +67,7 @@ public class GroupInviteServiceImpl implements GroupInviteService {
     }
 
     @Override
+    @Transactional
     public void acceptInvite(Long inviteId, User invitee) {
         GroupInvite inv = inviteRepo.findByIdAndInvitee(inviteId, invitee)
                 .orElseThrow(() -> new NotFoundException("Invite not found"));
@@ -81,6 +84,7 @@ public class GroupInviteServiceImpl implements GroupInviteService {
     }
 
     @Override
+    @Transactional
     public void declineInvite(Long inviteId, User invitee) {
         GroupInvite inv = inviteRepo.findByIdAndInvitee(inviteId, invitee)
                 .orElseThrow(() -> new NotFoundException("Invite not found"));
@@ -90,6 +94,7 @@ public class GroupInviteServiceImpl implements GroupInviteService {
     }
 
     @Override
+    @Transactional
     public void cancelInvite(Long inviteId, User owner) {
         GroupInvite inv = inviteRepo.findById(inviteId).orElseThrow(() -> new NotFoundException("Invite not found"));
         if (!inv.getGroup().getOwner().getId().equals(owner.getId())) {

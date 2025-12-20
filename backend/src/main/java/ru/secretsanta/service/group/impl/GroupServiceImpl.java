@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.secretsanta.dto.request.*;
 import ru.secretsanta.dto.response.GroupResponse;
 import ru.secretsanta.dto.response.UserShortResponse;
@@ -33,6 +34,7 @@ public class GroupServiceImpl implements GroupService {
 
 
     @Override
+    @Transactional
     public void createGroup(CreateGroupRequest request, User owner) {
         if (groupRepository.findAllByOwner(owner, Pageable.unpaged()).stream().count() > MAX_GROUPS_FOR_USER) {
             throw new TooMuchItemsException("too much groups for " + owner.getName());
@@ -43,6 +45,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void addUserToGroup(AddUserToGroupRequest request, User owner) {
         //TODO: make it admin function
         Group group = groupRepository.findByOwnerAndName(owner,request.groupName()).orElseThrow(() -> new NotFoundException("group not found or it is not yours"));
@@ -55,6 +58,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void kickUserFromGroup(KickUserFromGroupRequest request, User owner) {
         Group group = groupRepository.findByOwnerAndName(owner,request.groupName()).orElseThrow(() -> new NotFoundException("group not found or it is not yours"));
         User userToKick = userRepository.findByName(request.username()).orElseThrow(() -> new NotFoundException("user not found"));
@@ -63,20 +67,23 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void makeOtherUserOwner(OwnerTransferRequest request, User owner) {
         Group group = groupRepository.findByOwnerAndName(owner,request.groupName()).orElseThrow(() -> new NotFoundException("group not found or it is not yours"));
         User userToBecomeOwner = userRepository.findByName(request.username()).orElseThrow(() -> new NotFoundException("user not found"));
-        group.setOwner(owner);
+        group.setOwner(userToBecomeOwner);
         groupRepository.save(group);
     }
 
     @Override
+    @Transactional
     public void deleteGroup(String name, User owner) {
         Group group = groupRepository.findByOwnerAndName(owner,name).orElseThrow(() -> new NotFoundException("group not found or it is not yours"));
         groupRepository.delete(group);
     }
 
     @Override
+    @Transactional
     public void deleteGroup(Long id, User owner) {
         Group group = groupRepository.findById(id).orElseThrow(() -> new NotFoundException("group not found "));
         if (group.getOwner().getId() == owner.getId()){
@@ -87,21 +94,25 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GroupResponse getInfoAboutGroup(GroupRequest request) {
         return GroupMapper.toGroupResponse(groupRepository.findById(request.id()).orElseThrow(() -> new NotFoundException("group not found ")));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<GroupResponse> getAllGroups(Pageable pageable) {
         return PageMapper.listToPage(groupRepository.findAll().stream().map(GroupMapper::toGroupResponse).toList(),pageable);
     }
     @Override
+    @Transactional(readOnly = true)
     public Page<GroupResponse> getGroupsByUser(Pageable pageable,User user){
 
         return PageMapper.listToPage(groupRepository.findAllByOwnerOrParticipant(user).stream().map(GroupMapper::toGroupResponse).toList(),pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserShortResponse> getGroupParticipants(GroupRequest request) {
         return groupRepository.findById(request.id()).orElseThrow(() -> new NotFoundException("group not found ")).getUsers().stream().map(UserMapper::toUserShortResponse).toList();
     }

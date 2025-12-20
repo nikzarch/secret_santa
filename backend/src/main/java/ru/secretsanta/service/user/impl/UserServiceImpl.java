@@ -5,6 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.secretsanta.dto.response.UserShortResponse;
 import ru.secretsanta.entity.user.User;
 import ru.secretsanta.exception.common.NotFoundException;
@@ -19,17 +20,20 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public UserShortResponse getUserByName(String name) {
         return UserMapper.toUserShortResponse(userRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("User not found")));
     }
 
     @Override
+    @Transactional
     public void deleteUserByName(String name) {
         userRepository.delete(userRepository.findByName(name).orElseThrow(() -> new NotFoundException("user not found")));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
