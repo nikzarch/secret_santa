@@ -56,10 +56,12 @@ class ChatController(
                 currentUser.id,
                 recipient.id,
                 sendMessageRequest.eventId,
-                sendMessageRequest.message
+                sendMessageRequest.message,
+                if (chat.equals("santa")) true else false
             )
             ResponseEntity.ok(GenericResponse("message sent successfully"))
         } catch (e: Exception) {
+            e.printStackTrace()
             ResponseEntity(ErrorResponse("an error occured while sending a message"), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
